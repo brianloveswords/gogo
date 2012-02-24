@@ -1,0 +1,27 @@
+{
+  "name": "hyde-sql",
+  "version": "0.0.0",
+  "author": "Brian J Brennan <brian@mozillafoundation.org>",
+  "description": "nosql for sql, no sleep till brooklyn",
+  "contributors": [ ],
+  "main": "./lib/hyde-sql",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/brianloveswords/hyde-sql.git"
+  },
+  "keywords": [
+    "sql",
+    "mysql",
+    "nosql"
+  ],
+  "dependencies" : {
+    "underscore":  "*",
+    "vows"    :  "0.6.x",
+  },
+  "noAnalyze": true,
+  "bundleDependencies": [ ],
+  "license": "MIT",
+  "engine": {
+    "node": ">=0.6"
+  }
+}
