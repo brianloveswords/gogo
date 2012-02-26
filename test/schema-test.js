@@ -109,6 +109,13 @@ vows.describe('schema helpers').addBatch({
         assert.include(spec, 'validators');
         assert.include(spec.validators, Hyde.Validators.Type.String);
       },
+      'with unique': function (s) {
+        var spec = s.Varchar({length: 128, unique: 128})('word');
+        spec.sql.should.equal('VARCHAR(128)');
+        spec.keysql.should.equal('UNIQUE KEY `word` (`word` (128))');
+        assert.include(spec, 'validators');
+        assert.include(spec.validators, Hyde.Validators.Type.String);
+      },
     },
     'Hyde.Schema.Char' : {
       'char standard fare': function (s) {
