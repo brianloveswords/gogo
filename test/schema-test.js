@@ -72,25 +72,92 @@ vows.describe('schema helpers').addBatch({
         spec.sql.should.equal('INT DEFAULT 10');
       },
     },
+    'Hyde.Schema.Float' : {
+      'standard fare': function (s) {
+        var spec = s.Float()('abv');
+        spec.sql.should.equal('FLOAT');
+        assert.include(spec, 'validators');
+        assert.include(spec.validators, Hyde.Validators.Type.Number);
+      },
+    },
+    'Hyde.Schema.Double' : {
+      'standard fare': function (s) {
+        var spec = s.Double()('abv');
+        spec.sql.should.equal('DOUBLE');
+        assert.include(spec, 'validators');
+        assert.include(spec.validators, Hyde.Validators.Type.Number);
+      },
+    },
+    'Hyde.Schema.Blob' : {
+      'standard fare': function (s) {
+        var spec = s.Blob({default: 'ya'})('the blob');
+        spec.sql.should.equal('BLOB DEFAULT "ya"');
+        assert.include(spec, 'validators');
+        assert.include(spec.validators, Hyde.Validators.Type.String);
+      },
+    },
+    'Hyde.Schema.Varchar' : {
+      'standard fare': function (s) {
+        var spec = s.Varchar(128)('word');
+        spec.sql.should.equal('VARCHAR(128)');
+        assert.include(spec, 'validators');
+        assert.include(spec.validators, Hyde.Validators.Type.String);
+      },
+      'with options': function (s) {
+        var spec = s.Varchar({length: 128, default: 'yep'})('word');
+        spec.sql.should.equal('VARCHAR(128) DEFAULT "yep"');
+        assert.include(spec, 'validators');
+        assert.include(spec.validators, Hyde.Validators.Type.String);
+      },
+    },
+    'Hyde.Schema.Char' : {
+      'char standard fare': function (s) {
+        var spec = s.Char(128)('word');
+        spec.sql.should.equal('CHAR(128)');
+        assert.include(spec, 'validators');
+        assert.include(spec.validators, Hyde.Validators.Type.String);
+      },
+      'with options': function (s) {
+        var spec = s.Char({length: 128, default: 'yep'})('word');
+        spec.sql.should.equal('CHAR(128) DEFAULT "yep"');
+        assert.include(spec, 'validators');
+        assert.include(spec.validators, Hyde.Validators.Type.String);
+      },
+    },
+    'Hyde.Schema.Binary' : {
+      'standard fare': function (s) {
+        var spec = s.Binary(128)('word');
+        spec.sql.should.equal('BINARY(128)');
+        assert.include(spec, 'validators');
+        spec.validators[0].should.not.equal(Hyde.Validators.Type.String);
+      },
+      'with options': function (s) {
+        var spec = s.Binary({length: 128, default: 'yep'})('word');
+        spec.sql.should.equal('BINARY(128) DEFAULT "yep"');
+        assert.include(spec, 'validators');
+        spec.validators[0].should.not.equal(Hyde.Validators.Type.String);
+      },
+    },
+    'Hyde.Schema.Char' : {
+      'char standard fare': function (s) {
+        var spec = s.Varbinary(128)('word');
+        spec.sql.should.equal('VARBINARY(128)');
+        assert.include(spec, 'validators');
+        spec.validators[0].should.not.equal(Hyde.Validators.Type.String);
+      },
+      'with options': function (s) {
+        var spec = s.Varbinary({length: 128, default: 'yep'})('word');
+        spec.sql.should.equal('VARBINARY(128) DEFAULT "yep"');
+        assert.include(spec, 'validators');
+        spec.validators[0].should.not.equal(Hyde.Validators.Type.String);
+      },
+    },
     'Hyde.Schema.String' : {
       'standard fare': function (s) {
         var spec = s.String()();
         spec.sql.should.equal('TEXT');
         assert.include(spec, 'validators');
         assert.include(spec.validators, Hyde.Validators.Type.String);
-      },
-      'varchar, positional': function (s) {
-        var spec = s.String(28)();
-        spec.sql.should.equal('VARCHAR(28)');
-        assert.include(spec, 'validators');
-        assert.include(spec.validators, Hyde.Validators.Type.String);
-        spec.validators.should.have.lengthOf(2);
-        spec.validators[1].meta.name.should.equal('length');
-        spec.validators[1].meta.max.should.equal(28);
-      },
-      'varchar, named': function (s) {
-        var spec = s.String({size: 28})();
-        spec.sql.should.equal('VARCHAR(28)');
       },
       'char': function (s) {
         var spec = s.String({size: 28, type: 'char'})();
@@ -115,20 +182,15 @@ vows.describe('schema helpers').addBatch({
         
         spec = s.String({size: 'long'})();
         spec.sql.should.equal('LONGTEXT');
-            
-        spec = s.String('long')();
-        spec.sql.should.equal('LONGTEXT');
       },
       'tinytext': function (s) {
         var spec = s.String({size: 'tiny', type: 'text'})();
         spec.sql.should.equal('TINYTEXT');
         spec = s.String({size: 'tiny'})();
         spec.sql.should.equal('TINYTEXT');
-        spec = s.String('tiny')();
-        spec.sql.should.equal('TINYTEXT');
       },
       'unique with length': function (s) {
-        var spec = s.String(21, {unique: true})('t');
+        var spec = s.String({unique: true, length: 21})('t');
         spec.sql.should.equal('VARCHAR(21)');
         spec.keysql.should.equal('UNIQUE KEY `t` (`t`)');
         
@@ -141,7 +203,7 @@ vows.describe('schema helpers').addBatch({
         spec.keysql.should.equal('UNIQUE KEY `t` (`t` (128))');
       },
       'null/not null': function (s) {
-        var spec = s.String('small', { null: false })();
+        var spec = s.String({ type: 'smalltext',  null: false })();
         spec.sql.should.equal('SMALLTEXT NOT NULL');
         
         spec = s.String({ required: true })();
