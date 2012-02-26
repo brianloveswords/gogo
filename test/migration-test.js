@@ -52,7 +52,7 @@ vows.describe('testing migrations').addBatch({
     'getAlterSql': {
       topic: function (M) { return M.User.Migration() },
       'add' : function (t) {
-        var sql = t.getAlterSql({ yam: Base.Schema.Text }, 'add');
+        var sql = t.getAlterSql({ yam: Base.Schema.String() }, 'add');
         sql[0].should.equal('ALTER TABLE `user` ADD `yam` TEXT');
       },
       'change': {
