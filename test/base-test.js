@@ -146,7 +146,7 @@ vows.describe('base basics').addBatch({
     }
   }
 }).addBatch({
-  'Base model, finding': {
+  'Base model, finding & saving': {
     topic: function () {
       var self = this;
       var M = Base.extend({
@@ -154,11 +154,12 @@ vows.describe('base basics').addBatch({
         schema: {
           id: Hyde.Schema.Id,
           email: Hyde.Schema.String,
-          eggs: Hyde.Schema.String
+          eggs: Hyde.Schema.String,
+          drop: Hyde.Schema.String
         }
       })
       M.makeTable();
-      var x = new M({email: 'hey'});
+      var x = new M({email: 'hey', drop: 'what'});
       var y = new M({email: 'yo', other: 'garbage', ruining: 'everything'});
       var z = new M({email: 'sup', eggs: 'lots'});
       
@@ -166,18 +167,22 @@ vows.describe('base basics').addBatch({
         self.callback(null, M);
       });
       
-      x.save(callback);
+      x.save(function (err, res) {
+        x.set('drop', 'yeah');
+        x.save(callback)
+      });
       y.save(callback);
       z.save(callback);
     },
     '.find, simple' : {
       topic: function (M) {
-        M.find({email: 'yo'}, this.callback);
+        M.find({email: 'hey'}, this.callback);
       },
       'totally works': function (err, results) {
         assert.ifError(err);
         results.should.have.lengthOf(1);
-        results[0].get('email').should.equal('yo');
+        results[0].get('email').should.equal('hey');
+        results[0].get('drop').should.equal('yeah');
       }
     },
     '.find, advanced' : {
