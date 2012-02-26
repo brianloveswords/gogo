@@ -188,14 +188,15 @@ vows.describe('testing migrations').addBatch({
         }.bind(this);
         
         try {
-          t.dropColumn('drop', cb);
+          t.renameColumn('rename', 'lol', cb);
         } catch (error) {
           this.callback(error);
         }
       },
-      'should drop the damn column': function (err, result) {
+      'should rename the column': function (err, result) {
         assert.ifError(err);
-        result.should.not.match(/one/);
+        var sql = result[0]['Create Table'];
+        sql.should.not.match(/rename/);
       }
     }
   }
