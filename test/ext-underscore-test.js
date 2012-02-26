@@ -97,5 +97,12 @@ vows.describe('underscore extensions').addBatch({
     var spec = { beer: { mutators: { storage: function () { return 'yes' }}}}
     _.extract(spec, ['beer', 'mutators', 'storage'])().should.equal('yes');
     should.not.exist(_.extract({}, ['this', 'should', 'not', 'exist']))
-  }
+  },
+  '#callWith' : function () {
+    var fns = { beer: function () { return 'delicious' }}
+    var vals = { beer: 'pbr' }
+    var newvals = _.callWith(fns, vals);
+    newvals['beer'].should.equal('delicious');
+  },
+  
 }).export(module);

@@ -2,6 +2,7 @@ var _ = require('underscore')
   , vows = require('vows')
   , assert = require('assert')
   , should = require('should')
+  , fmap = require('functools').map
     
   , common = require('./common.js')
   , Hyde = require('..')
@@ -353,5 +354,53 @@ vows.describe('base basics').addBatch({
       m.set('nums');
       m.get('nums').should.equal('12345');
     }
+  }
+}).addBatch({
+  'Getting from foreign key': {
+    topic: function () {
+      var self = this;
+      var Beer = Base.extend({
+        table: 'beertest',
+        schema: {
+          id: Base.Schema.Id,
+          name: Base.Schema.Varchar(128),
+          abv: Base.Schema.Double
+        }
+      });
+      
+      var User = Base.extend({
+        table: 'usertest',
+        schema: {
+          id: Base.Schema.Id,
+          email: Base.Schema.Text,
+          beer: Base.Schema.Foreign({ model: Beer })
+        }
+      });
+
+      User.makeTable(function (err) {
+        if (err) return self.callback(err);
+        var rasputin = new Beer({name: 'Old Rasputin Russian Imperial Stout', abv: 9.0 });
+        var things = [
+          rasputin,
+          new Beer({name: 'Guinness', abv: 4.3 }),
+          new Beer({name: 'Pabst Blue Ribbon', abv: 4.7 }),
+          new Beer({name: 'Dogfish Head Raison D\'etre', abv: 8.0 }),
+          new User({email: 'brian@example.com', beer: rasputin })
+        ]
+        
+        var saver = function (m, callback) { m.save(callback) }
+        
+        fmap.async(saver, things, function (err, things) {
+          if (err) self.callback(err);
+          self.callback(null, things);
+        })
+      })
+    },
+    'lookin good' : function (err, beers) {
+      return;
+      assert.ifError(err);
+      var user = beers.pop();
+      assert.ok('rad');
+    },
   }
 }).export(module);
