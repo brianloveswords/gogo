@@ -165,7 +165,7 @@ vows.describe('testing migrations').addBatch({
         var t = M.Volatile.Migration();
         var cb = function (err, result) {
           if (err) return this.callback(err);
-          Hyde.client.query('show create table user', this.callback)
+          Hyde.client.query('show create table volatile', this.callback)
         }.bind(this);
         
         try {
@@ -184,7 +184,7 @@ vows.describe('testing migrations').addBatch({
         var t = M.Volatile.Migration();
         var cb = function (err, result) {
           if (err) return this.callback(err);
-          Hyde.client.query('show create table user', this.callback)
+          Hyde.client.query('show create table volatile', this.callback)
         }.bind(this);
         
         try {
@@ -197,6 +197,26 @@ vows.describe('testing migrations').addBatch({
         assert.ifError(err);
         var sql = result[0]['Create Table'];
         sql.should.not.match(/rename/);
+      }
+    },
+    'executeSql' : {
+      topic: function (M) {
+        var t = M.Volatile.Migration();
+        var cb = function (err, result) {
+          if (err) return this.callback(err);
+          Hyde.client.query('show create table volatile', this.callback)
+        }.bind(this);
+        
+        try {
+          t.executeSql('alter table `volatile` change column `id` `rad` int auto_increment not null', cb);
+        } catch (error) {
+          this.callback(error);
+        }
+      },
+      'should rename the column': function (err, result) {
+        assert.ifError(err);
+        var sql = result[0]['Create Table'];
+        sql.should.not.match(/`id`/);
       }
     }
   }
