@@ -2,7 +2,7 @@
   "name": "hyde-sql",
   "version": "0.0.0",
   "author": "Brian J Brennan <brian@mozillafoundation.org>",
-  "description": "nosql for sql, no sleep till brooklyn",
+  "description": "nosql for sql, no sleep till brooklyn. don't use this yet",
   "contributors": [ ],
   "main": "./lib/hyde-sql",
   "repository": {
@@ -15,8 +15,12 @@
     "nosql"
   ],
   "dependencies" : {
-    "underscore":  "*",
-    "vows"    :  "0.6.x",
+    "underscore":  "1.3.x",
+    "mysql": "0.9.x"
+  },
+  "devDependencies": {
+    "should" : "0.5.x",
+    "vows" :  "0.6.x"
   },
   "noAnalyze": true,
   "bundleDependencies": [ ],
