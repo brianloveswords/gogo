@@ -356,6 +356,26 @@ vows.describe('base basics').addBatch({
     }
   }
 }).addBatch({
+  'Unjoining results': {
+    'given just one mixed result' : {
+      topic: function () {
+        var Beer = Base.extend({table: 'beertest',schema: {id: Base.Schema.Id,name: Base.Schema.Varchar(128),abv: Base.Schema.Double}});
+        var User = Base.extend({table: 'usertest',schema: {id: Base.Schema.Id,email: Base.Schema.Text,beer: Base.Schema.Foreign({ model: Beer })}})
+        var res = [ { 'usertest$id': 1,
+                      'usertest$email': 'brian@example.com',
+                      'usertest$beer': 1,
+                      'beertest$id': 1,
+                      'beertest$name': 'Old Rasputin Russian Imperial Stout',
+                      'beertest$abv': 9 } ]
+        return User._unjoin(res);
+      },
+      'can separate' : function (result) {
+        console.dir(result);
+        assert('okay');
+      }
+    },
+  },
+  
   'Getting from foreign key': {
     topic: function () {
       var self = this;
@@ -385,7 +405,7 @@ vows.describe('base basics').addBatch({
           new Beer({name: 'Guinness', abv: 4.3 }),
           new Beer({name: 'Pabst Blue Ribbon', abv: 4.7 }),
           new Beer({name: 'Dogfish Head Raison D\'etre', abv: 8.0 }),
-          new User({email: 'brian@example.com', beer: rasputin })
+          new User({email: 'brian@example.com', beer: 1 })
         ]
         
         var saver = function (m, callback) { m.save(callback) }
@@ -396,11 +416,11 @@ vows.describe('base basics').addBatch({
         })
       })
     },
-    'lookin good' : function (err, beers) {
-      return;
+    'get beers from user object' : function (err, beers) {
       assert.ifError(err);
-      var user = beers.pop();
-      assert.ok('rad');
+      var user = beers.pop()
+        , rasputin = beers.shift();
+      user.get('beer').should.equal(rasputin);
     },
   }
 }).export(module);
