@@ -80,7 +80,11 @@ vows.describe('underscore extensions').addBatch({
     _.backtick('12').should.equal('`12`');
   },
   '#chomp' : function () {
-    _.chomp("what       \n").should.equal('what');
+    var str = "what       \n"
+    _.chomp(str).should.equal('what');
+    _.chomp(str, 'nope').should.equal(str);
+    _.chomp('yepnope', 'nope').should.equal('yep');
+    _.chomp('nopeyep', 'nope').should.equal('nopeyep');
   },
   '#downcase' : function () {
     _.downcase('HMMM').should.equal('hmmm');
