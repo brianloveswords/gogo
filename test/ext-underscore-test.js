@@ -1,12 +1,16 @@
 var vows = require('vows')
   , assert = require('assert')
   , should = require('should')
-var _ = require('underscore')
-require('../lib/ext-underscore');
-
+var _ = require('../lib/ext-underscore')
+  , u = require('underscore')
 
 
 vows.describe('underscore extensions').addBatch({
+  'does not pollute underscore' : function () {
+    should.not.exist(u.missing);
+    should.not.exist(u.not);
+    should.not.exist(u.getv);
+  },
   '#isObject': function () {
     _.isObject({}).should.equal(true);
     _.isObject('ham').should.equal(false);
