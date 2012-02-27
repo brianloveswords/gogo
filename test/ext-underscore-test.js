@@ -7,7 +7,7 @@ var _ = require('../lib/ext-underscore')
 
 vows.describe('underscore extensions').addBatch({
   'does not pollute underscore' : function () {
-    should.not.exist(u.missing);
+    should.not.exist(u.isMissing);
     should.not.exist(u.not);
     should.not.exist(u.getv);
   },
@@ -15,15 +15,15 @@ vows.describe('underscore extensions').addBatch({
     _.isObject({}).should.equal(true);
     _.isObject('ham').should.equal(false);
   },
-  '#missing' : function () {
-    _.missing('nope').should.equal(false);
-    _.missing('').should.equal(false);
-    _.missing(false).should.equal(false);
-    _.missing(null).should.equal(true);
-    _.missing(undefined).should.equal(true);
+  '#isMissing' : function () {
+    _.isMissing('nope').should.equal(false);
+    _.isMissing('').should.equal(false);
+    _.isMissing(false).should.equal(false);
+    _.isMissing(null).should.equal(true);
+    _.isMissing(undefined).should.equal(true);
   },
   '#not': function () {
-    var exists = _.not(_.missing);
+    var exists = _.not(_.isMissing);
     exists('nope').should.equal(true);
     exists('').should.equal(true);
     exists(false).should.equal(true);
@@ -90,6 +90,8 @@ vows.describe('underscore extensions').addBatch({
   },
   '#strjoin' : function () {
     _.strjoin([1, 2]).should.equal('1 2');
+    _.strjoin(1, 2).should.equal('1 2');
+    _.strjoin([1,[[[2]]]]).should.equal('1 2');
   },
   '#placeholders' : function () {
     var p = _.placeholders([1,2]);
@@ -108,5 +110,11 @@ vows.describe('underscore extensions').addBatch({
     var newvals = _.callWith(fns, vals);
     newvals['beer'].should.equal('delicious');
   },
-  
+  '#push': function () {
+    var arr = [];
+    _.push(arr, 1, 2, undefined, undefined, undefined, undefined, 3);
+    arr[0].should.equal(1);
+    arr[1].should.equal(2);
+    arr[2].should.equal(3);
+  }
 }).export(module);
