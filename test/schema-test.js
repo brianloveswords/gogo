@@ -244,7 +244,6 @@ vows.describe('schema helpers').addBatch({
           table: 'user',
           schema: { id : 'BIGINT AUTO_INCREMENT PRIMARY KEY' }
         })
-        User.parseSchema();
         
         var ss = s.Foreign({
           model: User,
@@ -330,16 +329,14 @@ vows.describe('schema helpers').addBatch({
       var M = Base.extend({
         table: 'stuff',
         engine: 'rad'
-      }, {
-        fieldspec: {
-          id: { sql: '1' },
-          email: { sql: '2' },
-          passwd: { sql: '3' },
-          rel: { sql: '4', keysql: 'related' },
-          rel2: { sql: '5', keysql: 'other related' }
-        }
       });
-      var sql = M.createTableSql();
+      var sql = M.createTableSql({
+        id: { sql: '1' },
+        email: { sql: '2' },
+        passwd: { sql: '3' },
+        rel: { sql: '4', keysql: 'related' },
+        rel2: { sql: '5', keysql: 'other related' }
+      });
       sql.should.equal('CREATE TABLE IF NOT EXISTS `stuff` (`id` 1, `email` 2, `passwd` 3, `rel` 4, `rel2` 5, related, other related) ENGINE = rad');
     }
   },
