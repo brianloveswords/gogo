@@ -124,17 +124,26 @@ vows.describe('underscore extensions').addBatch({
   '#curry': function () {
     var identity = _.curry(function (a) { return a });
     var add =  _.curry(function (a, b) { return a + b });
+    var sum = _.curry(function sum(a,b,c){
+      return a+b+c;
+    })
     
-    identity(1).should.equal(1);
-    identity(2).should.equal(2);
-    identity(3).should.equal(3);
+    assert.equal(sum()(3)()(1)(4), 8);
+    assert.equal(sum(3,1,4), 8);
+    assert.equal(sum(3)(1,4), 8);
+
+    assert.equal(identity(1), 1);
+    assert.equal(identity(2), 2);
+    assert.equal(identity(3), 3);
     
-    assert.ok( _.isFunction( add(3) ) );
-    add(3)(10).should.equal(13);
-    add(10)(50).should.equal(60);
+    assert.equal(add(3)(10), 13);
+    assert.equal(add(10)(50), 60);
+    assert.equal(add(10, 50), 60);
     
     var obj = { x: 10, plus10: function (a, b) { return this.x + a + b; } }
     var plusser = _.curry(obj.plus10, obj);
-    plusser(10)(10).should.equal(30);
+    
+    assert.equal(plusser(10)(10), 30);
+    assert.equal(plusser(10, 10), 30);
   }
 }).export(module);
