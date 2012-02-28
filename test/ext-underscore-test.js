@@ -120,5 +120,19 @@ vows.describe('underscore extensions').addBatch({
     arr[0].should.equal(1);
     arr[1].should.equal(2);
     arr[2].should.equal(3);
+  },
+  '#curry': function () {
+    var identity = function (a) { return a };
+    var ident = _.$(identity);
+    ident(1).should.equal(1);
+    ident(2).should.equal(2);
+    ident(3).should.equal(3);
+    
+    var add = function (a, b) { return a + b };
+    add = _.$(add) 
+    assert.ok( _.isFunction( add(3) ) );
+    _.$(add)(3)(10).should.equal(13);
+    _.$(add)(10)(50).should.equal(60);
+    
   }
 }).export(module);
