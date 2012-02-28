@@ -122,17 +122,19 @@ vows.describe('underscore extensions').addBatch({
     arr[2].should.equal(3);
   },
   '#curry': function () {
-    var identity = function (a) { return a };
-    var ident = _.$(identity);
-    ident(1).should.equal(1);
-    ident(2).should.equal(2);
-    ident(3).should.equal(3);
+    var identity = _.curry(function (a) { return a });
+    var add =  _.curry(function (a, b) { return a + b });
     
-    var add = function (a, b) { return a + b };
-    add = _.$(add) 
+    identity(1).should.equal(1);
+    identity(2).should.equal(2);
+    identity(3).should.equal(3);
+    
     assert.ok( _.isFunction( add(3) ) );
-    _.$(add)(3)(10).should.equal(13);
-    _.$(add)(10)(50).should.equal(60);
+    add(3)(10).should.equal(13);
+    add(10)(50).should.equal(60);
     
+    var obj = { x: 10, plus10: function (a, b) { return this.x + a + b; } }
+    var plusser = _.curry(obj.plus10, obj);
+    plusser(10)(10).should.equal(30);
   }
 }).export(module);
