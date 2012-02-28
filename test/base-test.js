@@ -33,6 +33,10 @@ vows.describe('base basics').addBatch({
         var m = new (Base.extend({hey: 'sup'}));
         m.hey.should.equal('sup');
       },
+      '#table': function () {
+        var M = Base.extend({table: 'ohai'});
+        M.table().should.equal('ohai');
+      },
     },
     'default': {
       'driver is mysql': function () {
@@ -103,6 +107,55 @@ vows.describe('base basics').addBatch({
         });
         M.parseSchema();
         spec(M).id.sql.should.equal('ya');
+      },
+    },
+    '.getSchema should': {
+      'error on missing schema': function () {
+        var M = Base.extend({});
+        assert.throws(function () {
+          M.getSchema();
+        }, /schema/);
+      },
+      'error on invalid schema type': function () {
+        var M = Base.extend({schema: 'hey yo'});
+        assert.throws(function () {
+          M.getSchema();
+        }, /schema/);
+      },
+      'handle strings as raw sql': function () {
+        var M = Base.extend({
+          schema: { id: 'BIGINT AUTO_INCREMENT PRIMARY KEY' }
+        });
+        var x = M.getSchema();
+        x.id.sql.should.equal('BIGINT AUTO_INCREMENT PRIMARY KEY');
+      },
+      'pass through objects': function () {
+        var M = Base.extend({
+          schema: { id: { sql: 'BIGINT AUTO_INCREMENT PRIMARY KEY' } }
+        });
+        var x = M.getSchema();
+        x.id.sql.should.equal('BIGINT AUTO_INCREMENT PRIMARY KEY');
+      },
+      'treat functions as generating objects': function () {
+        var M = Base.extend({
+          schema: { id: function (k) { return {
+            keysql: 'unique key (id)',
+            validators: [],
+            sup: true
+          } } }
+        });
+        var x = M.getSchema();
+        x.id.sup.should.equal(true);
+        x.id.keysql.should.equal('unique key (id)');
+      },
+      'handle higher order functions': function () {
+        var hdlr = function () { return function () { return { sql: 'ya' } } };
+        hdlr.higherOrder = true;
+        var M = Base.extend({
+          schema: { id: hdlr }
+        });
+        var x = M.getSchema();
+        x.id.sql.should.equal('ya');
       },
     },
   }
