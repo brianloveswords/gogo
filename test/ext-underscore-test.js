@@ -108,10 +108,10 @@ vows.describe('underscore extensions').addBatch({
     _.extract(spec, ['beer', 'mutators', 'storage'])().should.equal('yes');
     should.not.exist(_.extract({}, ['this', 'should', 'not', 'exist']))
   },
-  '#callWith' : function () {
+  '#callmap' : function () {
     var fns = { beer: function () { return 'delicious' }}
     var vals = { beer: 'pbr' }
-    var newvals = _.callWith(fns, vals);
+    var newvals = _.callmap(fns, vals);
     newvals['beer'].should.equal('delicious');
   },
   '#push': function () {
