@@ -35,8 +35,8 @@ vows.describe('underscore extensions').addBatch({
     should.not.exist(_.getv('es')({}))
     should.not.exist(_.getv('es')(undefined))
   },
-  '#getter' : function () {
-    _.getter({things: 'yes'})('things').should.equal('yes');
+  '#get' : function () {
+    _.get({things: 'yes'})('things').should.equal('yes');
   },
   '#frev': function () {
     var Yarra = _.frev(Array);
@@ -47,17 +47,17 @@ vows.describe('underscore extensions').addBatch({
     div(10, 100).should.equal(0.1);
     _.swap(div)(10, 100).should.equal(10);
   },
-  '#ozip': function () {
-    var arr = _.ozip({one: 1, two: 2});
+  '#seq': function () {
+    var arr = _.seq({one: 1, two: 2});
     arr[0][0].should.equal('one');
     arr[0][1].should.equal(1);
     arr[1][0].should.equal('two');
     arr[1][1].should.equal(2);
   },
-  '#xth': function () {
+  '#nth': function () {
     var arr = [1,2,3,4];
-    var first = _.xth(0)
-      , last = _.xth(arr.length-1);
+    var first = _.nth(0)
+      , last = _.nth(arr.length-1);
     first(arr).should.equal(1);
     last(arr).should.equal(4);
   },
