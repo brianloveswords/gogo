@@ -9,8 +9,6 @@ var _ = require('underscore')
   , Base = Hyde.Base
   , client = Hyde.client
 
-
-
 common.prepareTesting(client);
 
 var Models = {
