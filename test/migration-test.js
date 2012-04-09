@@ -113,7 +113,7 @@ vows.describe('testing migrations').addBatch({
           assert.ifError(err);
           var sql = result.pop()['Create Table'];
           sql.should.match(/unique key `emperor` \(`emperor`\(128\)\)/i);
-          sql.should.match(/`emperor` varchar\(255\) default 'x'/i);
+          sql.should.match(/`emperor` varchar\(255\).*default 'x'/i);
         }
       },
       'more complex addColumn' : {
@@ -146,10 +146,11 @@ vows.describe('testing migrations').addBatch({
         
         'adds all the fields fine' : function (err, result) {
           var sql = result[0]['Create Table'];
-          sql.should.match(/`sss` char\(128\) default 'y'/i);
-          sql.should.match(/`nnn` int\(\d+\) default null/i);
-          sql.should.match(/`eee` enum\('one','two'\) default null/i);
-          sql.should.match(/`stuff_id` (big)?int\(\d+\) default null/i);
+          console.dir(sql);
+          sql.should.match(/`sss` char\(128\).*default 'y'/i);
+          sql.should.match(/`nnn` int\(\d+\).*default null/i);
+          sql.should.match(/`eee` enum\('one','two'\).*default null/i);
+          sql.should.match(/`stuff_id` (big)?int\(\d+\).*default null/i);
         },
         
         'adds all the keys fine' : function (err, result) {
