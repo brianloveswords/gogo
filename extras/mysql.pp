@@ -8,11 +8,12 @@ class mysql::db {
   define mysqldb( $user, $password ) {
     exec { "create-${name}-db":
       unless => "/usr/bin/mysql -u${user} -p${password} ${name}",
-      command => "/usr/bin/mysql -uroot -p$mysql_password -e \"create database ${name}; grant all on ${name}.* to ${user}@localhost;\"",
+      command => "/usr/bin/mysql -uroot -e \"create database ${name}; grant all on ${name}.* to ${user}@localhost;\"",
     }
   }
-  mysqldb { "test_hyde":
-    user => "test_hyde",
+  mysqldb { "myapp_test":
+    user => "test",
+    password => "test",
   }  
 }
 
