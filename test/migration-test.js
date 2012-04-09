@@ -146,7 +146,6 @@ vows.describe('testing migrations').addBatch({
         
         'adds all the fields fine' : function (err, result) {
           var sql = result[0]['Create Table'];
-          console.dir(sql);
           sql.should.match(/`sss` char\(128\).*default 'y'/i);
           sql.should.match(/`nnn` int\(\d+\).*default null/i);
           sql.should.match(/`eee` enum\('one','two'\).*default null/i);
