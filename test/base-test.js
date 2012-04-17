@@ -1,13 +1,13 @@
-var _ = require('underscore')
-  , vows = require('vows')
-  , assert = require('assert')
-  , should = require('should')
-  , fmap = require('functools').map
-    
-  , common = require('./common.js')
-  , Hyde = require('..')
-  , Base = Hyde.Base
-  , client;
+var _ = require('underscore');
+var vows = require('vows');
+var assert = require('assert');
+var should = require('should');
+var fmap = require('functools').map;
+
+var common = require('./common.js');
+var Hyde = require('..');
+var Base = Hyde.Base;
+var client;
 
 var spec = function (m) { return m.fieldspec };
 
@@ -42,7 +42,7 @@ vows.describe('base basics').addBatch({
       'driver is mysql': function () {
         var m = new (Base.extend({}));
         m.driver.should.equal('mysql');
-      
+
         m = new (Base.extend({driver: 'postgres'}))
         m.driver.should.equal('postgres');
       },
@@ -57,7 +57,7 @@ vows.describe('base basics').addBatch({
     },
     'instances have access to client' : function () {
       var M = Base.extend({})
-        , m = new M;
+      var m = new M;
       assert.isFunction(m.client.query);
     },
     '.getSchema should': {
@@ -111,6 +111,52 @@ vows.describe('base basics').addBatch({
     },
   }
 }).addBatch({
+  'Schema Version table': {
+    topic : function () {
+      var M = Base.extend({
+        table: 'schema_ver_test',
+        schema: { id: Hyde.Schema.Id, name: Hyde.Schema.String }
+      });
+      return M;
+    },
+    'Base#updateSchemaVersionTable': {
+      'when no version is set' : {
+        topic : function (M) {
+          M.updateSchemaVersionTable(this.callback);
+        },
+        'creates or updates the table' : {
+          topic : function () {
+            client.query('select * from `'+Base.SCHEMA_TABLE+'` where `table` = "schema_ver_test"', this.callback)
+          },
+          'with the version set to `0000`' : function (err, res) {
+            assert.ifError(err);
+            assert.ok(typeof res !== Error);
+            res.length.should.equal(1);
+            res[0].table.should.equal('schema_ver_test');
+            res[0].version.should.equal('0000');
+          },
+        }
+      },
+      'when a version is set' : {
+        topic : function (M) {
+          M.prototype.version = '0621';
+          M.updateSchemaVersionTable(this.callback);
+        },
+        'updates the table' : {
+          topic : function () {
+            client.query('select * from `'+Base.SCHEMA_TABLE+'` where `table` = "schema_ver_test"', this.callback)
+          },
+          'with the version set to `0000`' : function (err, res) {
+            assert.ifError(err);
+            assert.ok(typeof res !== Error);
+            res.length.should.equal(1);
+            res[0].table.should.equal('schema_ver_test');
+            res[0].version.should.equal('0621');
+          },
+        }
+      }
+    },
+  },
   'Base model instances, saving': {
     'a basic model' : {
       topic: function () {
@@ -167,11 +213,11 @@ vows.describe('base basics').addBatch({
       var x = new M({email: 'hey', drop: 'what'});
       var y = new M({email: 'yo', other: 'garbage', ruining: 'everything'});
       var z = new M({email: 'sup', eggs: 'lots'});
-      
+
       var callback = _.after(3, function () {
         self.callback(null, M);
       });
-      
+
       x.save(function (err, res) {
         x.set('drop', 'yeah');
         x.save(callback)
@@ -371,7 +417,7 @@ vows.describe('base basics').addBatch({
           abv: Base.Schema.Double
         }
       });
-      
+
       var User = Base.extend({
         table: 'usertest',
         schema: {
@@ -391,9 +437,9 @@ vows.describe('base basics').addBatch({
           new Beer({name: 'Dogfish Head Raison D\'etre', abv: 8.0 }),
           new User({email: 'brian@example.com', beer: rasputin })
         ]
-        
+
         var saver = function (m, callback) { m.save(callback) }
-        
+
         fmap.async(saver, things, function (err, things) {
           if (err) self.callback(err);
           self.callback(null, things);
