@@ -1,13 +1,13 @@
-var _ = require('underscore')
-  , vows = require('vows')
-  , assert = require('assert')
-  , should = require('should')
-  , fmap = require('functools').map
+var _ = require('underscore');
+var vows = require('vows');
+var assert = require('assert');
+var should = require('should');
+var fmap = require('functools').map;
   
-  , common = require('./common.js')
-  , Gogo = require('..')(common.conf)
-  , Base = Gogo.Base
-  , client = Gogo.client
+var common = require('./common.js');
+var Gogo = require('..')(common.conf);
+var Base = Gogo.Base;
+var client = Gogo.client;
 
 common.prepareTesting(client);
 
@@ -26,6 +26,11 @@ var Models = {
     table: 'stuff',
     schema: { id: Base.Schema.Id }
   }),
+
+  Multiple: Base.extend({
+    table: 'multimigrate',
+    schema: { id: Base.Schema.Id }
+  })
 };
 
 function binder(o) { _.bindAll(o); }
@@ -33,20 +38,15 @@ _.map(_.values(Models), binder);
       
 
 vows.describe('testing migrations').addBatch({
-  'Test some migrations, yo' : {
+  'Test the migration helpers' : {
     topic: function () {
-      var maker = function (M, callback) { M.makeTable(callback) }
+      function maker (M, callback) { M.makeTable(callback); }
       
       fmap.async(maker, _.values(Models), function (err, res) {
         if (err) throw err;
         this.callback(null, Models);
       }.bind(this));
-    
-    
     },
-    // 'getCreateTable': function () {
-    //   var t = Base.Migration(User);
-    // },
     'getAlterSql': {
       topic: function (M) { return M.User.Migration() },
       'add' : function (t) {
@@ -79,28 +79,28 @@ vows.describe('testing migrations').addBatch({
       'add key': function (t) {
         var sql = t.getAlterSql({yeah: { type: 'unique' }}, 'add key')
         sql[0].should.equal('ALTER TABLE `user` ADD UNIQUE KEY `yeah` (`yeah`)');
-        
+
         sql = t.getAlterSql({yeah: { type: 'unique', name: 'yo' }}, 'add key')
         sql[0].should.equal('ALTER TABLE `user` ADD UNIQUE KEY `yeah` (`yo`)');
-        
+
         sql = t.getAlterSql({yeah: { type: 'unique', name: 'yo', length: 128 }}, 'add key')
         sql[0].should.equal('ALTER TABLE `user` ADD UNIQUE KEY `yeah` (`yo` (128))');
       }
     },
     'addColumn' : {
-      'simple like' : {
+      'real simple like' : {
         topic: function (M) {
           var t = M.User.Migration();
-          
+
           var cb_addCol = function (err, result) {
             if (err) return this.callback(err);
             Base.client.query('show create table user', this.callback)
           }.bind(this);
-          
+
           var spec = { emperor: Base.Schema.String({
             type: 'varchar',length: 255,unique: 128,default: 'x'
           })}
-          
+
           try {
             t.addColumn(spec, cb_addCol);
           } catch (err) {
@@ -116,19 +116,19 @@ vows.describe('testing migrations').addBatch({
       },
       'more complex addColumn' : {
         topic: function (M) {
-          var t = Base.Migration(M.User);
+          var t = M.User.Migration();
           _.bindAll(t);
-          
-          
+
+
           var adder = function (spec, callback) {
             t.addColumn(spec, callback);
           }
-          
+
           var cb_addCol = function (err, result) {
             if (err) return this.callback(err);
             Base.client.query('show create table user', this.callback)
           }.bind(this);
-          
+
           var specs =[
             { sss: Base.Schema.String({type: 'char', length: 128, unique: true, default: 'y'})},
             { nnn: Base.Schema.Number() },
@@ -141,7 +141,7 @@ vows.describe('testing migrations').addBatch({
             this.callback(err);
           }
         },
-        
+
         'adds all the fields fine' : function (err, result) {
           var sql = result[0]['Create Table'];
           sql.should.match(/`sss` char\(128\).*default 'y'/i);
@@ -149,7 +149,7 @@ vows.describe('testing migrations').addBatch({
           sql.should.match(/`eee` enum\('one','two'\).*default null/i);
           sql.should.match(/`stuff_id` (big)?int\(\d+\).*default null/i);
         },
-        
+
         'adds all the keys fine' : function (err, result) {
           var sql = result[0]['Create Table'];
           sql.should.match(/unique key `sss` \(`sss`\)/i);
@@ -165,7 +165,7 @@ vows.describe('testing migrations').addBatch({
           if (err) return this.callback(err);
           Gogo.client.query('show create table volatile', this.callback)
         }.bind(this);
-        
+
         try {
           t.dropColumn('drop', cb);
         } catch (error) {
@@ -184,7 +184,7 @@ vows.describe('testing migrations').addBatch({
           if (err) return this.callback(err);
           Gogo.client.query('show create table volatile', this.callback)
         }.bind(this);
-        
+
         try {
           t.renameColumn('rename', 'lol', cb);
         } catch (error) {
@@ -204,7 +204,7 @@ vows.describe('testing migrations').addBatch({
           if (err) return this.callback(err);
           Gogo.client.query('show create table volatile', this.callback)
         }.bind(this);
-        
+
         try {
           t.executeSql('alter table `volatile` change column `id` `rad` int auto_increment not null', cb);
         } catch (error) {
@@ -218,5 +218,54 @@ vows.describe('testing migrations').addBatch({
       }
     }
   }
-}).export(module);
+})
+  .addBatch({
+  'full migration': {
+    topic: function () {
+      Models.Multiple.makeTable(this.callback);
+    },
+    'a migration set with an up and a down' : {
+      topic : function (M) {
+        return M.Migration({
+          '0001 : add a `name` field' : {
+            up: function (t) {
+              t.addColumn({ name: Base.Schema.String });
+              t.addColumn({ radness: Base.Schema.Number });
+            },
+            down: function (t) {
+              t.dropColumn('name');
+            }
+          }
+        })
+      },
+      'can up `0001`' : {
+        topic: function (runner) {
+          runner.up('0001', this.callback);
+        },
+        'without error': function (err, res) {
+          assert.ifError(err);
+          assert.ok(!(res instanceof Error))
+        },
+        'then ask for the schema version' : {
+          topic: function () {
+            Models.Multiple.getSchemaVersion(this.callback);
+          },
+          'and get the right one back' : function (err, version) {
+            version.should.equal('0001');
+          },
+        },
+        'then get the columns' : {
+          topic: function () {
+            client.query('show columns in multimigrate', this.callback);
+          },
+          'and find the new columns' : function (err, results) {
+            assert.ok( _.any(results, function (c) { return c.Field == 'name' }) );
+            assert.ok( _.any(results, function (c) { return c.Field == 'radness' }) );
+          },
+        }
+      }
+    },
+  }
+})
+  .export(module);
 
