@@ -134,7 +134,7 @@ vows.describe('base basics').addBatch({
           },
         }
       },
-      'when a version is set' : {
+      'when a version is set in the schema def' : {
         topic : function () {
           var M = Base.extend({
             version: '0621',
@@ -153,6 +153,27 @@ vows.describe('base basics').addBatch({
             res.length.should.equal(1);
             res[0].table.should.equal('schema_ver_specific');
             res[0].version.should.equal('0621');
+          },
+        }
+      },
+      'when a version is passed to the method' : {
+        topic : function () {
+          var M = Base.extend({
+            table: 'schema_ver_passed_in',
+            schema: { id: Hyde.Schema.Id, name: Hyde.Schema.String }
+          });
+          M.updateSchemaVersionTable('1234', this.callback);
+        },
+        'updates the table' : {
+          topic : function () {
+            client.query('select * from `'+Base.SCHEMA_TABLE+'` where `table` = "schema_ver_passed_in"', this.callback)
+          },
+          'with the version set to `0621`' : function (err, res) {
+            assert.ifError(err);
+            assert.ok(typeof res !== Error);
+            res.length.should.equal(1);
+            res[0].table.should.equal('schema_ver_passed_in');
+            res[0].version.should.equal('1234');
           },
         }
       }
