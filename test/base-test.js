@@ -35,7 +35,7 @@ vows.describe('base basics').addBatch({
       },
       '#table': function () {
         var M = Base.extend({table: 'ohai'});
-        M.table().should.equal('ohai');
+        M.prototype.table.should.equal('ohai');
       },
     },
     'default': {
@@ -112,16 +112,13 @@ vows.describe('base basics').addBatch({
   }
 }).addBatch({
   'Schema Version table': {
-    topic : function () {
-      var M = Base.extend({
-        table: 'schema_ver_test',
-        schema: { id: Hyde.Schema.Id, name: Hyde.Schema.String }
-      });
-      return M;
-    },
     'Base#updateSchemaVersionTable': {
       'when no version is set' : {
-        topic : function (M) {
+        topic : function () {
+          var M = Base.extend({
+            table: 'schema_ver_test',
+            schema: { id: Hyde.Schema.Id, name: Hyde.Schema.String }
+          });
           M.updateSchemaVersionTable(this.callback);
         },
         'creates or updates the table' : {
@@ -138,24 +135,79 @@ vows.describe('base basics').addBatch({
         }
       },
       'when a version is set' : {
-        topic : function (M) {
-          M.prototype.version = '0621';
+        topic : function () {
+          var M = Base.extend({
+            version: '0621',
+            table: 'schema_ver_specific',
+            schema: { id: Hyde.Schema.Id, name: Hyde.Schema.String }
+          });
           M.updateSchemaVersionTable(this.callback);
         },
         'updates the table' : {
           topic : function () {
-            client.query('select * from `'+Base.SCHEMA_TABLE+'` where `table` = "schema_ver_test"', this.callback)
+            client.query('select * from `'+Base.SCHEMA_TABLE+'` where `table` = "schema_ver_specific"', this.callback)
           },
-          'with the version set to `0000`' : function (err, res) {
+          'with the version set to `0621`' : function (err, res) {
             assert.ifError(err);
             assert.ok(typeof res !== Error);
             res.length.should.equal(1);
-            res[0].table.should.equal('schema_ver_test');
+            res[0].table.should.equal('schema_ver_specific');
             res[0].version.should.equal('0621');
           },
         }
       }
     },
+    'Base#getSchemaVersion': {
+      'given a created model with a specific version': {
+        topic : function () {
+          var self = this;
+          var M = Base.extend({
+            table: 'schema_ver_test2',
+            version: '1000',
+            schema: { id: Hyde.Schema.Id, name: Hyde.Schema.String }
+          });
+          M.updateSchemaVersionTable(function (err) {
+            if (err) throw err;
+            M.getSchemaVersion(self.callback);
+          });
+        },
+        'should get the schema version' : function (err, version) {
+          assert.ifError(err);
+          version.should.equal('1000');
+        },
+      },
+      'given a created model without a version': {
+        topic : function () {
+          var self = this;
+          var M = Base.extend({
+            table: 'schema_ver_test3',
+            schema: { id: Hyde.Schema.Id, name: Hyde.Schema.String }
+          });
+          M.updateSchemaVersionTable(function (err) {
+            if (err) throw err;
+            M.getSchemaVersion(self.callback);
+          });
+        },
+        'should get the default version' : function (err, version) {
+          assert.ifError(err);
+          version.should.equal('0000');
+        },
+      },
+      'given an uncreated model': {
+        topic : function () {
+          var self = this;
+          var M = Base.extend({
+            table: 'schema_ver_test3',
+            schema: { id: Hyde.Schema.Id, name: Hyde.Schema.String }
+          });
+          M.getSchemaVersion(self.callback);
+        },
+        'should get the default version' : function (err, version) {
+          assert.ifError(err);
+          should.not.exist(version);
+        },
+      }
+    }
   },
   'Base model instances, saving': {
     'a basic model' : {
