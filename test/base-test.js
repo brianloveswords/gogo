@@ -112,14 +112,14 @@ vows.describe('base basics').addBatch({
   }
 }).addBatch({
   'Schema Version table': {
-    'Base#updateSchemaVersionTable': {
+    'Base#updateSchemaVersion': {
       'when no version is set' : {
         topic : function () {
           var M = Base.extend({
             table: 'schema_ver_test',
             schema: { id: Hyde.Schema.Id, name: Hyde.Schema.String }
           });
-          M.updateSchemaVersionTable(this.callback);
+          M.updateSchemaVersion(this.callback);
         },
         'creates or updates the table' : {
           topic : function () {
@@ -141,7 +141,7 @@ vows.describe('base basics').addBatch({
             table: 'schema_ver_specific',
             schema: { id: Hyde.Schema.Id, name: Hyde.Schema.String }
           });
-          M.updateSchemaVersionTable(this.callback);
+          M.updateSchemaVersion(this.callback);
         },
         'updates the table' : {
           topic : function () {
@@ -162,7 +162,7 @@ vows.describe('base basics').addBatch({
             table: 'schema_ver_passed_in',
             schema: { id: Hyde.Schema.Id, name: Hyde.Schema.String }
           });
-          M.updateSchemaVersionTable('1234', this.callback);
+          M.updateSchemaVersion('1234', this.callback);
         },
         'updates the table' : {
           topic : function () {
@@ -187,7 +187,7 @@ vows.describe('base basics').addBatch({
             version: '1000',
             schema: { id: Hyde.Schema.Id, name: Hyde.Schema.String }
           });
-          M.updateSchemaVersionTable(function (err) {
+          M.updateSchemaVersion(function (err) {
             if (err) throw err;
             M.getSchemaVersion(self.callback);
           });
@@ -204,7 +204,7 @@ vows.describe('base basics').addBatch({
             table: 'schema_ver_test3',
             schema: { id: Hyde.Schema.Id, name: Hyde.Schema.String }
           });
-          M.updateSchemaVersionTable(function (err) {
+          M.updateSchemaVersion(function (err) {
             if (err) throw err;
             M.getSchemaVersion(self.callback);
           });
