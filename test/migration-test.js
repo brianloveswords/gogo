@@ -5,9 +5,9 @@ var _ = require('underscore')
   , fmap = require('functools').map
   
   , common = require('./common.js')
-  , Hyde = require('..')(common.conf)
-  , Base = Hyde.Base
-  , client = Hyde.client
+  , Gogo = require('..')(common.conf)
+  , Base = Gogo.Base
+  , client = Gogo.client
 
 common.prepareTesting(client);
 
@@ -163,7 +163,7 @@ vows.describe('testing migrations').addBatch({
         var t = M.Volatile.Migration();
         var cb = function (err, result) {
           if (err) return this.callback(err);
-          Hyde.client.query('show create table volatile', this.callback)
+          Gogo.client.query('show create table volatile', this.callback)
         }.bind(this);
         
         try {
@@ -182,7 +182,7 @@ vows.describe('testing migrations').addBatch({
         var t = M.Volatile.Migration();
         var cb = function (err, result) {
           if (err) return this.callback(err);
-          Hyde.client.query('show create table volatile', this.callback)
+          Gogo.client.query('show create table volatile', this.callback)
         }.bind(this);
         
         try {
@@ -202,7 +202,7 @@ vows.describe('testing migrations').addBatch({
         var t = M.Volatile.Migration();
         var cb = function (err, result) {
           if (err) return this.callback(err);
-          Hyde.client.query('show create table volatile', this.callback)
+          Gogo.client.query('show create table volatile', this.callback)
         }.bind(this);
         
         try {

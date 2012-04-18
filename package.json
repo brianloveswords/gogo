@@ -1,13 +1,13 @@
 {
-  "name": "hyde-sql",
+  "name": "gogo",
   "version": "0.0.0",
-  "author": "Brian J Brennan <brian@mozillafoundation.org>",
+  "author": "Brian J Brennan <brian@nyhacker.org>",
   "description": "nosql for sql, no sleep till brooklyn. don't use this yet",
   "contributors": [ ],
-  "main": "./lib/hyde-sql",
+  "main": "./lib/gogo",
   "repository": {
     "type": "git",
-    "url": "https://github.com/brianloveswords/hyde-sql.git"
+    "url": "https://github.com/brianloveswords/gogo.git"
   },
   "keywords": [
     "sql",

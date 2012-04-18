@@ -1,1 +1,1 @@
-module.exports = require('./lib/hyde');
+module.exports = require('./lib/gogo');

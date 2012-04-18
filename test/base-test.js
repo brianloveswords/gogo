@@ -5,14 +5,14 @@ var should = require('should');
 var fmap = require('functools').map;
 
 var common = require('./common.js');
-var Hyde = require('..');
-var Base = Hyde.Base;
+var Gogo = require('..');
+var Base = Gogo.Base;
 var client;
 
 var spec = function (m) { return m.fieldspec };
 
-Hyde.initialize(common.conf);
-client = Hyde.client
+Gogo.initialize(common.conf);
+client = Gogo.client
 
 common.prepareTesting(client);
 
@@ -117,7 +117,7 @@ vows.describe('base basics').addBatch({
         topic : function () {
           var M = Base.extend({
             table: 'schema_ver_test',
-            schema: { id: Hyde.Schema.Id, name: Hyde.Schema.String }
+            schema: { id: Gogo.Schema.Id, name: Gogo.Schema.String }
           });
           M.updateSchemaVersion(this.callback);
         },
@@ -139,7 +139,7 @@ vows.describe('base basics').addBatch({
           var M = Base.extend({
             version: '0621',
             table: 'schema_ver_specific',
-            schema: { id: Hyde.Schema.Id, name: Hyde.Schema.String }
+            schema: { id: Gogo.Schema.Id, name: Gogo.Schema.String }
           });
           M.updateSchemaVersion(this.callback);
         },
@@ -160,7 +160,7 @@ vows.describe('base basics').addBatch({
         topic : function () {
           var M = Base.extend({
             table: 'schema_ver_passed_in',
-            schema: { id: Hyde.Schema.Id, name: Hyde.Schema.String }
+            schema: { id: Gogo.Schema.Id, name: Gogo.Schema.String }
           });
           M.updateSchemaVersion('1234', this.callback);
         },
@@ -185,7 +185,7 @@ vows.describe('base basics').addBatch({
           var M = Base.extend({
             table: 'schema_ver_test2',
             version: '1000',
-            schema: { id: Hyde.Schema.Id, name: Hyde.Schema.String }
+            schema: { id: Gogo.Schema.Id, name: Gogo.Schema.String }
           });
           M.updateSchemaVersion(function (err) {
             if (err) throw err;
@@ -202,7 +202,7 @@ vows.describe('base basics').addBatch({
           var self = this;
           var M = Base.extend({
             table: 'schema_ver_test3',
-            schema: { id: Hyde.Schema.Id, name: Hyde.Schema.String }
+            schema: { id: Gogo.Schema.Id, name: Gogo.Schema.String }
           });
           M.updateSchemaVersion(function (err) {
             if (err) throw err;
@@ -219,7 +219,7 @@ vows.describe('base basics').addBatch({
           var self = this;
           var M = Base.extend({
             table: 'schema_ver_test3',
-            schema: { id: Hyde.Schema.Id, name: Hyde.Schema.String }
+            schema: { id: Gogo.Schema.Id, name: Gogo.Schema.String }
           });
           M.getSchemaVersion(self.callback);
         },
@@ -235,7 +235,7 @@ vows.describe('base basics').addBatch({
       topic: function () {
         var M = Base.extend({
           table: 'ljsaf',
-          schema: { id: Hyde.Schema.Id, name: Hyde.Schema.String }
+          schema: { id: Gogo.Schema.Id, name: Gogo.Schema.String }
         });
         M.makeTable();
         return M;
@@ -276,10 +276,10 @@ vows.describe('base basics').addBatch({
       var M = Base.extend({
         table: 'findtest',
         schema: {
-          id: Hyde.Schema.Id,
-          email: Hyde.Schema.String,
-          eggs: Hyde.Schema.String,
-          drop: Hyde.Schema.String
+          id: Gogo.Schema.Id,
+          email: Gogo.Schema.String,
+          eggs: Gogo.Schema.String,
+          drop: Gogo.Schema.String
         }
       })
       M.makeTable();
@@ -352,7 +352,7 @@ vows.describe('base basics').addBatch({
   'Instance validation': {
     topic: function () {
       var M = Base.extend({
-        schema: { email: Hyde.Schema.String({required: true }) },
+        schema: { email: Gogo.Schema.String({required: true }) },
         validators: {
           email: [
             function beginWithH(v) { if (!v.match(/^h/)) return { message: 'must begin with h', name: 'begins-with-h' } },
@@ -401,7 +401,7 @@ vows.describe('base basics').addBatch({
 }).addBatch({
   'Instance mutators': {
     topic: function () {
-      var M = Base.extend({ schema: { id: Hyde.Schema.Id, doc: Hyde.Schema.Document() } })
+      var M = Base.extend({ schema: { id: Gogo.Schema.Id, doc: Gogo.Schema.Document() } })
       return M;
     },
     'model#mutate' : {
@@ -428,7 +428,7 @@ vows.describe('base basics').addBatch({
     topic: function () {
       var M = Base.extend({
         table: 'prosavetest',
-        schema: { id: Hyde.Schema.Id, doc: Hyde.Schema.Document() }
+        schema: { id: Gogo.Schema.Id, doc: Gogo.Schema.Document() }
       })
       M.makeTable();
       return M;

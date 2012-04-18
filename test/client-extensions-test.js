@@ -4,8 +4,8 @@ var _ = require('underscore')
   , should = require('should')
     
   , common = require('./common.js')
-  , Hyde = require('..')(common.conf)
-  , client = Hyde.client;
+  , Gogo = require('..')(common.conf)
+  , client = Gogo.client;
 
 var qs = function (s) { return s.qs.join(' ') };
 

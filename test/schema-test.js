@@ -2,26 +2,26 @@ var _ = require('underscore')
   , vows = require('vows')
   , assert = require('assert')
   , should = require('should')
-  , Hyde = require('..')
-  , Base = Hyde.Base
+  , Gogo = require('..')
+  , Base = Gogo.Base
 
 vows.describe('schema helpers').addBatch({
   'schema helpers': {
-    topic: Hyde.Schema,
-    'Hyde.Schema.Id' : function (f) {
+    topic: Gogo.Schema,
+    'Gogo.Schema.Id' : function (f) {
       var spec = f.Id()('id');
       assert.include(spec, 'sql');
       spec.sql.should.equal('BIGINT AUTO_INCREMENT');
       spec.keysql.should.equal('PRIMARY KEY (`id`)');
       assert.include(spec, 'validators');
-      assert.include(spec.validators, Hyde.Validators.Type.Number);
+      assert.include(spec.validators, Gogo.Validators.Type.Number);
     },
-    'Hyde.Schema.Number' : {
+    'Gogo.Schema.Number' : {
       'standard fare': function (s) {
         var spec = s.Number()();
             spec.sql.should.equal('INT');
         assert.include(spec, 'validators');
-        assert.include(spec.validators, Hyde.Validators.Type.Number);
+        assert.include(spec.validators, Gogo.Validators.Type.Number);
       },
       'big ones': function (s) {
         var spec = s.Number('big')();
@@ -61,110 +61,110 @@ vows.describe('schema helpers').addBatch({
         var spec = s.Number('small', { null: false })();
         spec.sql.should.equal('SMALLINT NOT NULL');
             // #TODO: file bug with should.js about should.include not supporting objects
-        spec.validators.should.include(Hyde.Validators.Require);
+        spec.validators.should.include(Gogo.Validators.Require);
         
         spec = s.Number('small', { required: true })();
         spec.sql.should.equal('SMALLINT NOT NULL');
-        spec.validators.should.include(Hyde.Validators.Require);
+        spec.validators.should.include(Gogo.Validators.Require);
       },
       'default': function (s) {
         var spec = s.Number({ default: 10 })();
         spec.sql.should.equal('INT DEFAULT 10');
       },
     },
-    'Hyde.Schema.Float' : {
+    'Gogo.Schema.Float' : {
       'standard fare': function (s) {
         var spec = s.Float()('abv');
         spec.sql.should.equal('FLOAT');
         assert.include(spec, 'validators');
-        assert.include(spec.validators, Hyde.Validators.Type.Number);
+        assert.include(spec.validators, Gogo.Validators.Type.Number);
       },
     },
-    'Hyde.Schema.Double' : {
+    'Gogo.Schema.Double' : {
       'standard fare': function (s) {
         var spec = s.Double()('abv');
         spec.sql.should.equal('DOUBLE');
         assert.include(spec, 'validators');
-        assert.include(spec.validators, Hyde.Validators.Type.Number);
+        assert.include(spec.validators, Gogo.Validators.Type.Number);
       },
     },
-    'Hyde.Schema.Blob' : {
+    'Gogo.Schema.Blob' : {
       'standard fare': function (s) {
         var spec = s.Blob({default: 'ya'})('the blob');
         spec.sql.should.equal('BLOB DEFAULT "ya"');
         assert.include(spec, 'validators');
-        assert.include(spec.validators, Hyde.Validators.Type.String);
+        assert.include(spec.validators, Gogo.Validators.Type.String);
       },
     },
-    'Hyde.Schema.Varchar' : {
+    'Gogo.Schema.Varchar' : {
       'standard fare': function (s) {
         var spec = s.Varchar(128)('word');
         spec.sql.should.equal('VARCHAR(128)');
         assert.include(spec, 'validators');
-        assert.include(spec.validators, Hyde.Validators.Type.String);
+        assert.include(spec.validators, Gogo.Validators.Type.String);
       },
       'with options': function (s) {
         var spec = s.Varchar({length: 128, default: 'yep'})('word');
         spec.sql.should.equal('VARCHAR(128) DEFAULT "yep"');
         assert.include(spec, 'validators');
-        assert.include(spec.validators, Hyde.Validators.Type.String);
+        assert.include(spec.validators, Gogo.Validators.Type.String);
       },
       'with unique': function (s) {
         var spec = s.Varchar({length: 128, unique: 128})('word');
         spec.sql.should.equal('VARCHAR(128)');
         spec.keysql.should.equal('UNIQUE KEY `word` (`word` (128))');
         assert.include(spec, 'validators');
-        assert.include(spec.validators, Hyde.Validators.Type.String);
+        assert.include(spec.validators, Gogo.Validators.Type.String);
       },
     },
-    'Hyde.Schema.Char' : {
+    'Gogo.Schema.Char' : {
       'char standard fare': function (s) {
         var spec = s.Char(128)('word');
         spec.sql.should.equal('CHAR(128)');
         assert.include(spec, 'validators');
-        assert.include(spec.validators, Hyde.Validators.Type.String);
+        assert.include(spec.validators, Gogo.Validators.Type.String);
       },
       'with options': function (s) {
         var spec = s.Char({length: 128, default: 'yep'})('word');
         spec.sql.should.equal('CHAR(128) DEFAULT "yep"');
         assert.include(spec, 'validators');
-        assert.include(spec.validators, Hyde.Validators.Type.String);
+        assert.include(spec.validators, Gogo.Validators.Type.String);
       },
     },
-    'Hyde.Schema.Binary' : {
+    'Gogo.Schema.Binary' : {
       'standard fare': function (s) {
         var spec = s.Binary(128)('word');
         spec.sql.should.equal('BINARY(128)');
         assert.include(spec, 'validators');
-        spec.validators[0].should.not.equal(Hyde.Validators.Type.String);
+        spec.validators[0].should.not.equal(Gogo.Validators.Type.String);
       },
       'with options': function (s) {
         var spec = s.Binary({length: 128, default: 'yep'})('word');
         spec.sql.should.equal('BINARY(128) DEFAULT "yep"');
         assert.include(spec, 'validators');
-        spec.validators[0].should.not.equal(Hyde.Validators.Type.String);
+        spec.validators[0].should.not.equal(Gogo.Validators.Type.String);
       },
     },
-    'Hyde.Schema.Char' : {
+    'Gogo.Schema.Char' : {
       'char standard fare': function (s) {
         var spec = s.Varbinary(128)('word');
         spec.sql.should.equal('VARBINARY(128)');
         assert.include(spec, 'validators');
-        spec.validators[0].should.not.equal(Hyde.Validators.Type.String);
+        spec.validators[0].should.not.equal(Gogo.Validators.Type.String);
       },
       'with options': function (s) {
         var spec = s.Varbinary({length: 128, default: 'yep'})('word');
         spec.sql.should.equal('VARBINARY(128) DEFAULT "yep"');
         assert.include(spec, 'validators');
-        spec.validators[0].should.not.equal(Hyde.Validators.Type.String);
+        spec.validators[0].should.not.equal(Gogo.Validators.Type.String);
       },
     },
-    'Hyde.Schema.String' : {
+    'Gogo.Schema.String' : {
       'standard fare': function (s) {
         var spec = s.String()();
         spec.sql.should.equal('TEXT');
         assert.include(spec, 'validators');
-        assert.include(spec.validators, Hyde.Validators.Type.String);
+        assert.include(spec.validators, Gogo.Validators.Type.String);
       },
       'char': function (s) {
         var spec = s.String({size: 28, type: 'char'})();
@@ -215,10 +215,10 @@ vows.describe('schema helpers').addBatch({
         
         spec = s.String({ required: true })();
         spec.sql.should.equal('TEXT NOT NULL');
-        spec.validators.should.include(Hyde.Validators.Require);
+        spec.validators.should.include(Gogo.Validators.Require);
       }
     },
-    'Hyde.Schema.Enum' : {
+    'Gogo.Schema.Enum' : {
       'standard fare': function (s) {
         var spec = s.Enum(['green', 'eggs', 'ham'])();
         spec.sql.should.equal('ENUM ("green", "eggs", "ham")');
@@ -231,14 +231,14 @@ vows.describe('schema helpers').addBatch({
       'null/not null': function (s) {
         var spec = s.Enum(['yo', 'la', 'tengo'], { required: true })();
         assert.include(spec, 'validators');
-        spec.validators[0].should.equal(Hyde.Validators.Require);
+        spec.validators[0].should.equal(Gogo.Validators.Require);
       },
       'default': function (s) {
         var spec = s.Enum(['yo', 'la', 'tengo'], { default: 'tengo' })();
         spec.sql.should.equal('ENUM ("yo", "la", "tengo") DEFAULT "tengo"');
       }
     },
-    'Hyde.Schema.Foreign' : {
+    'Gogo.Schema.Foreign' : {
       'basic test' : function (s) {
         var User = Base.extend({
           table: 'user',
@@ -260,7 +260,7 @@ vows.describe('schema helpers').addBatch({
         ss.keysql.should.equal(correct.keysql);
       },
     },
-    'Hyde.Schema.Document': {
+    'Gogo.Schema.Document': {
       'basic test' : function (s) {
         function intta (v) { return v; }
         function outta (v) { return v; }
@@ -270,7 +270,7 @@ vows.describe('schema helpers').addBatch({
         })();
         var correct = {
           sql: "BLOB",
-          validators: [Hyde.Validators.Serializable(intta)],
+          validators: [Gogo.Validators.Serializable(intta)],
           mutators: { storage: intta, retrieval: outta }
         };
         ss.sql.should.equal(correct.sql);
@@ -290,10 +290,10 @@ vows.describe('schema helpers').addBatch({
       'null/not null' : function (s) {
         var ss = s.Document({required: true})();
         ss.sql.should.match(/not null/i);
-        ss.validators[0].should.equal(Hyde.Validators.Require);
+        ss.validators[0].should.equal(Gogo.Validators.Require);
       },
     },
-    'Hyde.Schema.Boolean': {
+    'Gogo.Schema.Boolean': {
       'basic' : function (s) {
         var ss = s.Boolean()();
         ss.sql.should.match(/^boolean$/i)
@@ -303,7 +303,7 @@ vows.describe('schema helpers').addBatch({
         ss.sql.should.match(/default 1/i)
       }
     },
-    'Hyde.Schema.Timestamp': {
+    'Gogo.Schema.Timestamp': {
       'basic' : function (s) {
         var ss = s.Time()();
         ss.sql.should.match(/^timestamp$/i)
@@ -345,7 +345,7 @@ vows.describe('schema helpers').addBatch({
       topic: function () {
         var M = Base.extend({
           table: 'tesstsajo',
-          schema: { id: Hyde.Schema.Id, name: Hyde.Schema.String('long') }
+          schema: { id: Gogo.Schema.Id, name: Gogo.Schema.String('long') }
         });
         return M;
       },
@@ -363,12 +363,12 @@ vows.describe('schema helpers').addBatch({
       topic: function () {
         var User = Base.extend({
           schema: {
-            id: Hyde.Schema.Id,
-            email: Hyde.Schema.String({ length: 255, unique: true, required: true }),
-            last_login: Hyde.Schema.Number({ null: true }),
-            active: Hyde.Schema.Boolean({ default: 1 }),
-            passwd: Hyde.Schema.String({ length: 255 }),
-            salt: Hyde.Schema.String({ type: 'blob', length: 'tiny' })
+            id: Gogo.Schema.Id,
+            email: Gogo.Schema.String({ length: 255, unique: true, required: true }),
+            last_login: Gogo.Schema.Number({ null: true }),
+            active: Gogo.Schema.Boolean({ default: 1 }),
+            passwd: Gogo.Schema.String({ length: 255 }),
+            salt: Gogo.Schema.String({ type: 'blob', length: 'tiny' })
           }
         });
         return User;
@@ -388,18 +388,18 @@ vows.describe('schema helpers').addBatch({
         var User = Base.extend({
           table: 'jlakj9',
           schema: {
-            id: Hyde.Schema.Id,
-            email: Hyde.Schema.String({ length: 255, unique: true, required: true })
+            id: Gogo.Schema.Id,
+            email: Gogo.Schema.String({ length: 255, unique: true, required: true })
           }
         });
         var Badge = Base.extend({
           schema: {
-            id: Hyde.Schema.Id,
-            user_id: Hyde.Schema.Foreign({
+            id: Gogo.Schema.Id,
+            user_id: Gogo.Schema.Foreign({
               model: User,
               field : 'id'
             }),
-            type: Hyde.Schema.Enum(['hosted', 'signed'], { null: false })
+            type: Gogo.Schema.Enum(['hosted', 'signed'], { null: false })
           }
         })
         return Badge;
