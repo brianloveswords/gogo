@@ -26,18 +26,13 @@ var Models = {
     table: 'stuff',
     schema: { id: Base.Schema.Id }
   }),
-
-  Multiple: Base.extend({
-    table: 'multimigrate',
-    schema: { id: Base.Schema.Id }
-  })
 };
 
 function binder(o) { _.bindAll(o); }
 _.map(_.values(Models), binder);
       
-
-vows.describe('testing migrations').addBatch({
+var suite = vows.describe('testing migrations');
+suite.addBatch({
   'Test the migration helpers' : {
     topic: function () {
       function maker (M, callback) { M.makeTable(callback); }
@@ -218,16 +213,23 @@ vows.describe('testing migrations').addBatch({
       }
     }
   }
-})
-  .addBatch({
-  'single migration testing': {
+});
+  
+  
+var Multi = Base.extend({
+  table: 'multimigrate',
+  schema: { id: Base.Schema.Id }
+});
+
+suite.addBatch({
+  'single, good migration testing': {
     topic: function () {
-      Models.Multiple.makeTable(this.callback);
+      Multi.makeTable(this.callback);
     },
-    'a migration set with an up and a down' : {
+    'a migration set with a good up and down' : {
       topic : function (M) {
         return M.Migration({
-          '0001 : add a `name` field' : {
+          '0001: add a `name` field' : {
             up: function (t) {
               t.addColumn({ name: Base.Schema.String });
               t.addColumn({ radness: Base.Schema.Number });
@@ -249,10 +251,11 @@ vows.describe('testing migrations').addBatch({
         },
         'ask for the schema version' : {
           topic: function () {
-            Models.Multiple.getSchemaVersion(this.callback);
+            Multi.getSchemaVersion(this.callback);
           },
           'and get the new one back' : function (err, version) {
-            version.should.equal('0001');
+            assert.ifError(err);
+            version.should.equal('0001: add a `name` field');
           },
         },
         'get the columns' : {
@@ -269,9 +272,10 @@ vows.describe('testing migrations').addBatch({
             },
             'ask for the schema version' : {
               topic: function () {
-                Models.Multiple.getSchemaVersion(this.callback);
+                Multi.getSchemaVersion(this.callback);
               },
               'and get the previous one back' : function (err, version) {
+                assert.ifError(err);
                 version.should.equal('0000');
               },
             },
@@ -280,6 +284,7 @@ vows.describe('testing migrations').addBatch({
                 client.query('show columns in multimigrate', this.callback);
               },
               'and not find the new columns' : function (err, results) {
+                assert.ifError(err);
                 assert.ok( !_.any(results, function (c) { return c.Field == 'name' }) );
                 assert.ok( !_.any(results, function (c) { return c.Field == 'radness' }) );
               },
@@ -289,6 +294,42 @@ vows.describe('testing migrations').addBatch({
       }
     }
   }
-})
-  .export(module);
+});
+
+var BadUp = Base.extend({
+  table: 'badup',
+  schema: { id: Base.Schema.Id }
+});
+
+suite.addBatch({
+  'single, bad migration testing': {
+    topic: function () {
+      BadUp.makeTable(this.callback);
+    },
+    'a migration set with a bad up' : {
+      topic : function (M) {
+        return M.Migration({
+          '0001 : add a `name` field' : {
+            up: function (t) {
+              t.addColumn({ name: Base.Schema.String });
+              t.addColumn({ name: Base.Schema.Number });
+            },
+            down: function (t) { t.dropColumn('name'); }
+          }
+        });
+      },
+      'can `up` a specific migration' : {
+        topic: function (runner) {
+          runner.up('0001', this.callback);
+        },
+        'and get an appropriate error': function (err, res) {
+          should.exist(err);
+          should.not.exist(res);
+        }
+      }
+    }
+  }
+});
+
+suite.export(module);
 
