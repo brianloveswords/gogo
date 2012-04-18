@@ -239,7 +239,7 @@ vows.describe('testing migrations').addBatch({
           }
         })
       },
-      'can up `0001`' : {
+      'can `up` a specific migration' : {
         topic: function (runner) {
           runner.up('0001', this.callback);
         },
@@ -251,7 +251,7 @@ vows.describe('testing migrations').addBatch({
           topic: function () {
             Models.Multiple.getSchemaVersion(this.callback);
           },
-          'and get the right one back' : function (err, version) {
+          'and get the new one back' : function (err, version) {
             version.should.equal('0001');
           },
         },
@@ -279,7 +279,7 @@ vows.describe('testing migrations').addBatch({
               topic: function () {
                 client.query('show columns in multimigrate', this.callback);
               },
-              'and note find the new columns' : function (err, results) {
+              'and not find the new columns' : function (err, results) {
                 assert.ok( !_.any(results, function (c) { return c.Field == 'name' }) );
                 assert.ok( !_.any(results, function (c) { return c.Field == 'radness' }) );
               },
