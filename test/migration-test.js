@@ -220,7 +220,7 @@ vows.describe('testing migrations').addBatch({
   }
 })
   .addBatch({
-  'full migration': {
+  'single migration testing': {
     topic: function () {
       Models.Multiple.makeTable(this.callback);
     },
@@ -234,6 +234,7 @@ vows.describe('testing migrations').addBatch({
             },
             down: function (t) {
               t.dropColumn('name');
+              t.dropColumn('radness');
             }
           }
         })
@@ -246,7 +247,7 @@ vows.describe('testing migrations').addBatch({
           assert.ifError(err);
           assert.ok(!(res instanceof Error))
         },
-        'then ask for the schema version' : {
+        'ask for the schema version' : {
           topic: function () {
             Models.Multiple.getSchemaVersion(this.callback);
           },
@@ -254,7 +255,7 @@ vows.describe('testing migrations').addBatch({
             version.should.equal('0001');
           },
         },
-        'then get the columns' : {
+        'get the columns' : {
           topic: function () {
             client.query('show columns in multimigrate', this.callback);
           },
@@ -262,9 +263,31 @@ vows.describe('testing migrations').addBatch({
             assert.ok( _.any(results, function (c) { return c.Field == 'name' }) );
             assert.ok( _.any(results, function (c) { return c.Field == 'radness' }) );
           },
+          'then run the `down` migration' : {
+            topic : function (x, y, z, runner) {
+              runner.down('0001', this.callback);
+            },
+            'ask for the schema version' : {
+              topic: function () {
+                Models.Multiple.getSchemaVersion(this.callback);
+              },
+              'and get the previous one back' : function (err, version) {
+                version.should.equal('0000');
+              },
+            },
+            'get the columns' : {
+              topic: function () {
+                client.query('show columns in multimigrate', this.callback);
+              },
+              'and note find the new columns' : function (err, results) {
+                assert.ok( !_.any(results, function (c) { return c.Field == 'name' }) );
+                assert.ok( !_.any(results, function (c) { return c.Field == 'radness' }) );
+              },
+            }
+          }
         }
       }
-    },
+    }
   }
 })
   .export(module);
