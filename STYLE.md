@@ -25,14 +25,27 @@ var one = 1
   , three = 3;
 ```
 
-## Prefer spaces near opening/closing braces and brackets.
-### The exception is  when you are getting an attribute from an object.
+## Use spaces near opening/closing braces and brackets.
+
+![tyson](http://i.imgur.com/sd786.gif)
 
 ```js
-// preferred
+// yep
 var arr = [ 1, 2, 3 ];
 var hash = { one: 1, two: 2 };
+```
 
+![doctor nope](http://i.imgur.com/vk7hE.gif)
+
+```js
+// nope
+var arr = [1,2,3];
+var hash = {one: 1,two: 2};
+```
+
+
+### The exception is  when you are getting an attribute from an object.
+```
 // exception
 var x = obj['attribute'];
 ```
