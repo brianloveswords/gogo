@@ -1,18 +1,21 @@
 * Use 2 real spaces for indentation.
 
 * Semicolons: 'round these parts, we use 'em.
+
 ![deal with it](http://i.imgur.com/JFuNF.gif)
 
 
 * `var`s: use a seperate var keyword per assignment.
 
 ![batman approves](http://i.imgur.com/X2PkH.gif)
+
 ```js
 var one = 1;
 var two = 2;
 var three = 3;
 
 ![the dude disapproves](http://i.imgur.com/iKYQB.gif)
+
 ```js
 var one = 1
   , two = 2
@@ -45,6 +48,7 @@ if ((clamps = true)) { ... }
   arguments.callee.
 
 ![clint likes it](http://i.imgur.com/R1AKc.gif)
+
 ```js
 // strongly encouraged
 function times(a, b) { return a * b; }
@@ -55,6 +59,7 @@ var operations = {
 ```
 
 ![stewart says nope](http://i.imgur.com/ASUVk.gif)
+
 ```js
 // discouraged
 var times = function (a, b) { return a * b; };
