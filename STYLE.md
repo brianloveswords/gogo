@@ -1,11 +1,11 @@
-* Use 2 real spaces for indentation.
+## Use 2 real spaces for indentation.
 
-* Semicolons: 'round these parts, we use 'em.
+## Semicolons: 'round these parts, we use 'em.
 
 ![deal with it](http://i.imgur.com/JFuNF.gif)
 
 
-* `var`s: use a seperate var keyword per assignment.
+## `var`s: use a seperate var keyword per assignment.
 
 ![batman approves](http://i.imgur.com/X2PkH.gif)
 
@@ -25,7 +25,7 @@ var one = 1
   , three = 3;
 ```
 
-* Prefer spaces near opening/closing braces and brackets. The exception is
+## Prefer spaces near opening/closing braces and brackets. The exception is
   when you are getting an attribute from an object.
 
 ```js
@@ -37,7 +37,7 @@ var hash = { one: 1, two: 2 };
 var x = obj['attribute'];
 ```
 
-* Assignment in a conditionals okay, but must be wrapped with extra parens.
+## Assignment in a conditionals okay, but must be wrapped with extra parens.
 
 ```js
 // okay
@@ -45,10 +45,8 @@ var clamps;
 if ((clamps = true)) { ... }
 ```
 
-* Strongly prefer function statements to assignment of function
-  expressions. In cases where function expressions are unavoidable, give them
-  a name to help with stack traces and recursion without using
-  arguments.callee.
+## Strongly prefer function statements to assignment of function  expressions.
+### In cases where function expressions are unavoidable, give them a name
 
 ![clint likes it](http://i.imgur.com/R1AKc.gif)
 
@@ -71,6 +69,6 @@ var operations = {
 }
 ```
 
-* Ternary statements are fine where it helps readability.
+## Ternary statements are fine where it helps readability.
 
-* Prefer `===` to `==` except in completely unambiguous cases.
+## Prefer `===` to `==` except in completely unambiguous cases.
