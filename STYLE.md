@@ -10,6 +10,7 @@
 ![batman approves](http://i.imgur.com/X2PkH.gif)
 
 ```js
+// yep
 var one = 1;
 var two = 2;
 var three = 3;
@@ -18,6 +19,7 @@ var three = 3;
 ![the dude disapproves](http://i.imgur.com/iKYQB.gif)
 
 ```js
+// nope
 var one = 1
   , two = 2
   , three = 3;
