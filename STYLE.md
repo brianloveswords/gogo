@@ -1,6 +1,12 @@
 ## Use 2 real spaces for indentation.
 
-## Semicolons: 'round these parts, we use 'em.
+## Ternary statements are fine where it helps readability.
+
+## Prefer `===` to `==` except in completely unambiguous cases.
+
+## Use single quotes for strings.
+
+## Semicolons: ’round these parts, we use ’em.
 
 ![deal with it](http://i.imgur.com/JFuNF.gif)
 
@@ -82,6 +88,3 @@ var operations = {
 }
 ```
 
-## Ternary statements are fine where it helps readability.
-
-## Prefer `===` to `==` except in completely unambiguous cases.
