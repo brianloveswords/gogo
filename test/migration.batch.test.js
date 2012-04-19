@@ -32,10 +32,10 @@ suite.addBatch({
           up: function (t) { t.addColumn({ email: Gogo.Field.Varchar(140) }) },
           down: function (t) { t.dropColumn('email') }
         },
-        // '103: rename email to electronicmail': {
-        //   up: function (t) { t.renameColumn({ email: 'electronicmail' }) },
-        //   down: function (t) { t.renameColumn({ electronicmail: 'email' }) }
-        // }
+        '103: rename email to electronicmail': {
+          up: function (t) { t.renameColumn({ email: 'electronicmail' }) },
+          down: function (t) { t.renameColumn({ electronicmail: 'email' }) }
+        }
       });
       m.makeTable(this.callback);
     },
@@ -51,8 +51,8 @@ suite.addBatch({
         topic: function (a) {
           TestModel.getSchemaVersion(this.callback)
         },
-        'should be 102' : function (version) {
-          version.should.equal('102: add email column');
+        'should be 103' : function (version) {
+          version.should.equal('103: rename email to electronicmail');
         },
       }
     }
