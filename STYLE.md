@@ -45,7 +45,7 @@ var hash = {one: 1,two: 2};
 
 
 ### The exception is  when you are getting an attribute from an object.
-```
+```js
 // exception
 var x = obj['attribute'];
 ```
