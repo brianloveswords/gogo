@@ -3,33 +3,28 @@ var vows = require('vows');
 var assert = require('assert');
 var should = require('should');
 var fmap = require('functools').map;
-  
 var common = require('./common.js');
 var Gogo = require('..')(common.conf);
-var Base = Gogo.Base;
 var client = Gogo.client;
 
 common.prepareTesting(client);
 
 var Models = {
-  Volatile: Base.extend({
+  Volatile: Gogo.Base.extend({
     table: 'volatile',
-    schema: { id: Base.Field.Id, drop: Base.Field.Number, rename: Base.Field.Number }
+    schema: { id: Gogo.Field.Id, drop: Gogo.Field.Number, rename: Gogo.Field.Number }
   }),
   
-  User: Base.extend({
+  User: Gogo.Base.extend({
     table: 'user',
-    schema: { id: Base.Field.Id }
+    schema: { id: Gogo.Field.Id }
   }),
   
-  Stuff: Base.extend({
+  Stuff: Gogo.Base.extend({
     table: 'stuff',
-    schema: { id: Base.Field.Id }
+    schema: { id: Gogo.Field.Id }
   }),
 };
-
-function binder(o) { _.bindAll(o); }
-_.map(_.values(Models), binder);
       
 var suite = vows.describe('testing migrations');
 suite.addBatch({
@@ -45,12 +40,12 @@ suite.addBatch({
     'getAlterSql': {
       topic: function (M) { return M.User.Migration() },
       'add' : function (t) {
-        var sql = t.getAlterSql({ yam: Base.Field.String() }, 'add');
+        var sql = t.getAlterSql({ yam: Gogo.Field.String() }, 'add');
         sql[0].should.equal('ALTER TABLE `user` ADD `yam` TEXT');
       },
       'change': {
         'takes a spec' :function (t) {
-          var sql = t.getAlterSql({ beets: Base.Field.Number() }, 'change');
+          var sql = t.getAlterSql({ beets: Gogo.Field.Number() }, 'change');
           sql[0].should.equal('ALTER TABLE `user` CHANGE `beets` INT');
         },
         'takes a straaaaang': function (t) {
@@ -58,7 +53,7 @@ suite.addBatch({
           sql[0].should.equal('ALTER TABLE `user` CHANGE `clams` TASTY CLAMS');
         },
         'handles unique intelligently': function (t) {
-          var sql = t.getAlterSql({ clams: Base.Field.Text({unique: 128}) }, 'change');
+          var sql = t.getAlterSql({ clams: Gogo.Field.Text({unique: 128}) }, 'change');
           sql.should.have.lengthOf(2);
           sql[1].should.equal('ALTER TABLE `user` ADD UNIQUE KEY `clams` (`clams` (128))');
         }
@@ -89,10 +84,10 @@ suite.addBatch({
 
           var cb_addCol = function (err, result) {
             if (err) return this.callback(err);
-            Base.client.query('show create table user', this.callback)
+            client.query('show create table user', this.callback)
           }.bind(this);
 
-          var spec = { emperor: Base.Field.String({
+          var spec = { emperor: Gogo.Field.String({
             type: 'varchar',length: 255,unique: 128,default: 'x'
           })}
 
@@ -121,14 +116,14 @@ suite.addBatch({
 
           var cb_addCol = function (err, result) {
             if (err) return this.callback(err);
-            Base.client.query('show create table user', this.callback)
+            client.query('show create table user', this.callback)
           }.bind(this);
 
           var specs =[
-            { sss: Base.Field.String({type: 'char', length: 128, unique: true, default: 'y'})},
-            { nnn: Base.Field.Number() },
-            { eee: Base.Field.Enum(['one', 'two']) },
-            { stuff_id: Base.Field.Foreign({model: M.Stuff, field: 'id'})}
+            { sss: Gogo.Field.String({type: 'char', length: 128, unique: true, default: 'y'})},
+            { nnn: Gogo.Field.Number() },
+            { eee: Gogo.Field.Enum(['one', 'two']) },
+            { stuff_id: Gogo.Field.Foreign({model: M.Stuff, field: 'id'})}
           ]
           try {
             fmap.async(adder, specs, cb_addCol);
@@ -216,9 +211,9 @@ suite.addBatch({
 });
   
   
-var Multi = Base.extend({
+var Multi = Gogo.Base.extend({
   table: 'multimigrate',
-  schema: { id: Base.Field.Id }
+  schema: { id: Gogo.Field.Id }
 });
 
 suite.addBatch({
@@ -231,8 +226,8 @@ suite.addBatch({
         return M.Migration({
           '0001: add a `name` field' : {
             up: function (t) {
-              t.addColumn({ name: Base.Field.String });
-              t.addColumn({ radness: Base.Field.Number });
+              t.addColumn({ name: Gogo.Field.String });
+              t.addColumn({ radness: Gogo.Field.Number });
             },
             down: function (t) {
               t.dropColumn('name');
@@ -299,9 +294,9 @@ suite.addBatch({
 suite.addBatch({
   'single, bad migration testing': {
     topic: function () {
-      var BadUp = Base.extend({
+      var BadUp = Gogo.Base.extend({
         table: 'badup',
-        schema: { id: Base.Field.Id }
+        schema: { id: Gogo.Field.Id }
       });
       BadUp.makeTable(this.callback);
     },
@@ -310,8 +305,8 @@ suite.addBatch({
         return M.Migration({
           '0001 : add a `name` field' : {
             up: function (t) {
-              t.addColumn({ name: Base.Field.String });
-              t.addColumn({ name: Base.Field.Number });
+              t.addColumn({ name: Gogo.Field.String });
+              t.addColumn({ name: Gogo.Field.Number });
             },
             down: function (t) { t.dropColumn('name'); }
           }
@@ -333,9 +328,9 @@ suite.addBatch({
 suite.addBatch({
   'single, missing migration': {
     topic: function () {
-      var Missing = Base.extend({
+      var Missing = Gogo.Base.extend({
         table: 'missingmigration',
-        schema: { id: Base.Field.Id }
+        schema: { id: Gogo.Field.Id }
       });
       Missing.makeTable(this.callback);
     },
@@ -343,7 +338,7 @@ suite.addBatch({
       topic : function (M) {
         return M.Migration({
           '0001 : add a `name` field' : {
-            up: function (t) { t.addColumn({ name: Base.Field.String });},
+            up: function (t) { t.addColumn({ name: Gogo.Field.String });},
             down: function (t) { t.dropColumn('name'); }
           }
         });
