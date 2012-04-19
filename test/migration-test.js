@@ -296,14 +296,13 @@ suite.addBatch({
   }
 });
 
-var BadUp = Base.extend({
-  table: 'badup',
-  schema: { id: Base.Schema.Id }
-});
-
 suite.addBatch({
   'single, bad migration testing': {
     topic: function () {
+      var BadUp = Base.extend({
+        table: 'badup',
+        schema: { id: Base.Schema.Id }
+      });
       BadUp.makeTable(this.callback);
     },
     'a migration set with a bad up' : {
@@ -323,6 +322,37 @@ suite.addBatch({
           runner.up('0001', this.callback);
         },
         'and get an appropriate error': function (err, res) {
+          should.exist(err);
+          should.not.exist(res);
+        }
+      }
+    }
+  }
+});
+
+suite.addBatch({
+  'single, missing migration': {
+    topic: function () {
+      var Missing = Base.extend({
+        table: 'missingmigration',
+        schema: { id: Base.Schema.Id }
+      });
+      Missing.makeTable(this.callback);
+    },
+    'given a migration set with fine data' : {
+      topic : function (M) {
+        return M.Migration({
+          '0001 : add a `name` field' : {
+            up: function (t) { t.addColumn({ name: Base.Schema.String });},
+            down: function (t) { t.dropColumn('name'); }
+          }
+        });
+      },
+      'when trying to `up` a missing migration' : {
+        topic: function (runner) {
+          runner.up('hambones', this.callback);
+        },
+        'should get an appropriate error': function (err, res) {
           should.exist(err);
           should.not.exist(res);
         }
