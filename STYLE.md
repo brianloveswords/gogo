@@ -5,7 +5,7 @@
 ![deal with it](http://i.imgur.com/JFuNF.gif)
 
 
-## `var`s: use a seperate var keyword per assignment.
+## Use a seperate `var` statement per assignment.
 
 ![batman approves](http://i.imgur.com/X2PkH.gif)
 
@@ -25,8 +25,8 @@ var one = 1
   , three = 3;
 ```
 
-## Prefer spaces near opening/closing braces and brackets. The exception is
-  when you are getting an attribute from an object.
+## Prefer spaces near opening/closing braces and brackets.
+### The exception is  when you are getting an attribute from an object.
 
 ```js
 // preferred
