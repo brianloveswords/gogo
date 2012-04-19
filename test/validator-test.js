@@ -1,8 +1,8 @@
-var _ = require('underscore')
-  , vows = require('vows')
-  , assert = require('assert')
-  , should = require('should')
-  , Gogo = require('..')
+var _ = require('underscore');
+var vows = require('vows');
+var assert = require('assert');
+var should = require('should');
+var Gogo = require('..');
 
 vows.describe('Validators whaaaaat').addBatch({
   'validator helpers': {
@@ -14,7 +14,7 @@ vows.describe('Validators whaaaaat').addBatch({
     },
     'Gogo.Validators.Require.when': function (v) {
       var test = v.Require.when({field:'type', is:'signed'})
-      , o = {type: 'signed'}
+      var o = {type: 'signed'}
       test(null, o).name.should.equal('required-when');
       should.not.exist(test(true, o));
     },
@@ -250,9 +250,9 @@ vows.describe('Validators whaaaaat').addBatch({
           function findby(f) { return function(o){ return o.field === f } }
           function testFor(a, f) { return _.any(a, function (v) { return v.field === f }); }
           var empty = test({})
-          , level1 = empty.errors
-          , level2 = _.find(level1, findby('badge')).errors
-          , level3 = _.find(level2, findby('issuer')).errors
+          var level1 = empty.errors
+          var level2 = _.find(level1, findby('badge')).errors
+          var level3 = _.find(level2, findby('issuer')).errors
           assert.ok(testFor(level1, 'recipient'));
           assert.ok(testFor(level1, 'badge'));
           assert.ok(testFor(level2, 'version'));

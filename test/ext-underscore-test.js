@@ -1,9 +1,8 @@
 var vows = require('vows')
-  , assert = require('assert')
-  , should = require('should')
+var assert = require('assert')
+var should = require('should')
 var _ = require('../lib/ext-underscore')
-  , u = require('underscore')
-
+var u = require('underscore')
 
 vows.describe('underscore extensions').addBatch({
   'does not pollute underscore' : function () {
@@ -57,7 +56,7 @@ vows.describe('underscore extensions').addBatch({
   '#nth': function () {
     var arr = [1,2,3,4];
     var first = _.nth(0)
-      , last = _.nth(arr.length-1);
+    var last = _.nth(arr.length-1);
     first(arr).should.equal(1);
     last(arr).should.equal(4);
   },

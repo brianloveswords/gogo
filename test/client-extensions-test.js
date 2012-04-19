@@ -1,11 +1,11 @@
 var _ = require('underscore')
-  , vows = require('vows')
-  , assert = require('assert')
-  , should = require('should')
+var vows = require('vows')
+var assert = require('assert')
+var should = require('should')
     
-  , common = require('./common.js')
-  , Gogo = require('..')(common.conf)
-  , client = Gogo.client;
+var common = require('./common.js')
+var Gogo = require('..')(common.conf)
+var client = Gogo.client;
 
 var qs = function (s) { return s.qs.join(' ') };
 
@@ -24,7 +24,7 @@ vows.describe('testing client extension').addBatch({
     },
     'multiple do not interfere': function () {
       var s1 = client.select('wut')
-        , s2 = client.select('lol')
+      var s2 = client.select('lol')
       qs(s1).should.equal('SELECT wut');
       qs(s2).should.equal('SELECT lol');
     },
