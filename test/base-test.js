@@ -117,7 +117,7 @@ vows.describe('base basics').addBatch({
         topic : function () {
           var M = Base.extend({
             table: 'schema_ver_test',
-            schema: { id: Gogo.Schema.Id, name: Gogo.Schema.String }
+            schema: { id: Gogo.Field.Id, name: Gogo.Field.String }
           });
           M.updateSchemaVersion(this.callback);
         },
@@ -139,7 +139,7 @@ vows.describe('base basics').addBatch({
           var M = Base.extend({
             version: '0621',
             table: 'schema_ver_specific',
-            schema: { id: Gogo.Schema.Id, name: Gogo.Schema.String }
+            schema: { id: Gogo.Field.Id, name: Gogo.Field.String }
           });
           M.updateSchemaVersion(this.callback);
         },
@@ -160,7 +160,7 @@ vows.describe('base basics').addBatch({
         topic : function () {
           var M = Base.extend({
             table: 'schema_ver_passed_in',
-            schema: { id: Gogo.Schema.Id, name: Gogo.Schema.String }
+            schema: { id: Gogo.Field.Id, name: Gogo.Field.String }
           });
           M.updateSchemaVersion('1234', this.callback);
         },
@@ -185,7 +185,7 @@ vows.describe('base basics').addBatch({
           var M = Base.extend({
             table: 'schema_ver_test2',
             version: '1000',
-            schema: { id: Gogo.Schema.Id, name: Gogo.Schema.String }
+            schema: { id: Gogo.Field.Id, name: Gogo.Field.String }
           });
           M.updateSchemaVersion(function (err) {
             if (err) throw err;
@@ -202,7 +202,7 @@ vows.describe('base basics').addBatch({
           var self = this;
           var M = Base.extend({
             table: 'schema_ver_test3',
-            schema: { id: Gogo.Schema.Id, name: Gogo.Schema.String }
+            schema: { id: Gogo.Field.Id, name: Gogo.Field.String }
           });
           M.updateSchemaVersion(function (err) {
             if (err) throw err;
@@ -219,7 +219,7 @@ vows.describe('base basics').addBatch({
           var self = this;
           var M = Base.extend({
             table: 'schema_ver_test3',
-            schema: { id: Gogo.Schema.Id, name: Gogo.Schema.String }
+            schema: { id: Gogo.Field.Id, name: Gogo.Field.String }
           });
           M.getSchemaVersion(self.callback);
         },
@@ -235,7 +235,7 @@ vows.describe('base basics').addBatch({
       topic: function () {
         var M = Base.extend({
           table: 'ljsaf',
-          schema: { id: Gogo.Schema.Id, name: Gogo.Schema.String }
+          schema: { id: Gogo.Field.Id, name: Gogo.Field.String }
         });
         M.makeTable();
         return M;
@@ -276,10 +276,10 @@ vows.describe('base basics').addBatch({
       var M = Base.extend({
         table: 'findtest',
         schema: {
-          id: Gogo.Schema.Id,
-          email: Gogo.Schema.String,
-          eggs: Gogo.Schema.String,
-          drop: Gogo.Schema.String
+          id: Gogo.Field.Id,
+          email: Gogo.Field.String,
+          eggs: Gogo.Field.String,
+          drop: Gogo.Field.String
         }
       })
       M.makeTable();
@@ -352,7 +352,7 @@ vows.describe('base basics').addBatch({
   'Instance validation': {
     topic: function () {
       var M = Base.extend({
-        schema: { email: Gogo.Schema.String({required: true }) },
+        schema: { email: Gogo.Field.String({required: true }) },
         validators: {
           email: [
             function beginWithH(v) { if (!v.match(/^h/)) return { message: 'must begin with h', name: 'begins-with-h' } },
@@ -401,7 +401,7 @@ vows.describe('base basics').addBatch({
 }).addBatch({
   'Instance mutators': {
     topic: function () {
-      var M = Base.extend({ schema: { id: Gogo.Schema.Id, doc: Gogo.Schema.Document() } })
+      var M = Base.extend({ schema: { id: Gogo.Field.Id, doc: Gogo.Field.Document() } })
       return M;
     },
     'model#mutate' : {
@@ -428,7 +428,7 @@ vows.describe('base basics').addBatch({
     topic: function () {
       var M = Base.extend({
         table: 'prosavetest',
-        schema: { id: Gogo.Schema.Id, doc: Gogo.Schema.Document() }
+        schema: { id: Gogo.Field.Id, doc: Gogo.Field.Document() }
       })
       M.makeTable();
       return M;
@@ -485,18 +485,18 @@ vows.describe('base basics').addBatch({
       var Beer = Base.extend({
         table: 'beertest',
         schema: {
-          id: Base.Schema.Id,
-          name: Base.Schema.Varchar(128),
-          abv: Base.Schema.Double
+          id: Base.Field.Id,
+          name: Base.Field.Varchar(128),
+          abv: Base.Field.Double
         }
       });
 
       var User = Base.extend({
         table: 'usertest',
         schema: {
-          id: Base.Schema.Id,
-          email: Base.Schema.Text,
-          beer: Base.Schema.Foreign({ model: Beer })
+          id: Base.Field.Id,
+          email: Base.Field.Text,
+          beer: Base.Field.Foreign({ model: Beer })
         }
       });
 

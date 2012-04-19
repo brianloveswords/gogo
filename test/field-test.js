@@ -1,14 +1,14 @@
-var _ = require('underscore')
-  , vows = require('vows')
-  , assert = require('assert')
-  , should = require('should')
-  , Gogo = require('..')
-  , Base = Gogo.Base
+var _ = require('underscore');
+var vows = require('vows');
+var assert = require('assert');
+var should = require('should');
+var Gogo = require('..');
+var Base = Gogo.Base;
 
 vows.describe('schema helpers').addBatch({
-  'schema helpers': {
-    topic: Gogo.Schema,
-    'Gogo.Schema.Id' : function (f) {
+  'field helpers': {
+    topic: Gogo.Field,
+    'Gogo.Field.Id' : function (f) {
       var spec = f.Id()('id');
       assert.include(spec, 'sql');
       spec.sql.should.equal('BIGINT AUTO_INCREMENT');
@@ -16,7 +16,7 @@ vows.describe('schema helpers').addBatch({
       assert.include(spec, 'validators');
       assert.include(spec.validators, Gogo.Validators.Type.Number);
     },
-    'Gogo.Schema.Number' : {
+    'Gogo.Field.Number' : {
       'standard fare': function (s) {
         var spec = s.Number()();
             spec.sql.should.equal('INT');
@@ -72,7 +72,7 @@ vows.describe('schema helpers').addBatch({
         spec.sql.should.equal('INT DEFAULT 10');
       },
     },
-    'Gogo.Schema.Float' : {
+    'Gogo.Field.Float' : {
       'standard fare': function (s) {
         var spec = s.Float()('abv');
         spec.sql.should.equal('FLOAT');
@@ -80,7 +80,7 @@ vows.describe('schema helpers').addBatch({
         assert.include(spec.validators, Gogo.Validators.Type.Number);
       },
     },
-    'Gogo.Schema.Double' : {
+    'Gogo.Field.Double' : {
       'standard fare': function (s) {
         var spec = s.Double()('abv');
         spec.sql.should.equal('DOUBLE');
@@ -88,7 +88,7 @@ vows.describe('schema helpers').addBatch({
         assert.include(spec.validators, Gogo.Validators.Type.Number);
       },
     },
-    'Gogo.Schema.Blob' : {
+    'Gogo.Field.Blob' : {
       'standard fare': function (s) {
         var spec = s.Blob({default: 'ya'})('the blob');
         spec.sql.should.equal('BLOB DEFAULT "ya"');
@@ -96,7 +96,7 @@ vows.describe('schema helpers').addBatch({
         assert.include(spec.validators, Gogo.Validators.Type.String);
       },
     },
-    'Gogo.Schema.Varchar' : {
+    'Gogo.Field.Varchar' : {
       'standard fare': function (s) {
         var spec = s.Varchar(128)('word');
         spec.sql.should.equal('VARCHAR(128)');
@@ -117,7 +117,7 @@ vows.describe('schema helpers').addBatch({
         assert.include(spec.validators, Gogo.Validators.Type.String);
       },
     },
-    'Gogo.Schema.Char' : {
+    'Gogo.Field.Char' : {
       'char standard fare': function (s) {
         var spec = s.Char(128)('word');
         spec.sql.should.equal('CHAR(128)');
@@ -131,7 +131,7 @@ vows.describe('schema helpers').addBatch({
         assert.include(spec.validators, Gogo.Validators.Type.String);
       },
     },
-    'Gogo.Schema.Binary' : {
+    'Gogo.Field.Binary' : {
       'standard fare': function (s) {
         var spec = s.Binary(128)('word');
         spec.sql.should.equal('BINARY(128)');
@@ -145,7 +145,7 @@ vows.describe('schema helpers').addBatch({
         spec.validators[0].should.not.equal(Gogo.Validators.Type.String);
       },
     },
-    'Gogo.Schema.Char' : {
+    'Gogo.Field.Char' : {
       'char standard fare': function (s) {
         var spec = s.Varbinary(128)('word');
         spec.sql.should.equal('VARBINARY(128)');
@@ -159,7 +159,7 @@ vows.describe('schema helpers').addBatch({
         spec.validators[0].should.not.equal(Gogo.Validators.Type.String);
       },
     },
-    'Gogo.Schema.String' : {
+    'Gogo.Field.String' : {
       'standard fare': function (s) {
         var spec = s.String()();
         spec.sql.should.equal('TEXT');
@@ -218,7 +218,7 @@ vows.describe('schema helpers').addBatch({
         spec.validators.should.include(Gogo.Validators.Require);
       }
     },
-    'Gogo.Schema.Enum' : {
+    'Gogo.Field.Enum' : {
       'standard fare': function (s) {
         var spec = s.Enum(['green', 'eggs', 'ham'])();
         spec.sql.should.equal('ENUM ("green", "eggs", "ham")');
@@ -238,7 +238,7 @@ vows.describe('schema helpers').addBatch({
         spec.sql.should.equal('ENUM ("yo", "la", "tengo") DEFAULT "tengo"');
       }
     },
-    'Gogo.Schema.Foreign' : {
+    'Gogo.Field.Foreign' : {
       'basic test' : function (s) {
         var User = Base.extend({
           table: 'user',
@@ -260,7 +260,7 @@ vows.describe('schema helpers').addBatch({
         ss.keysql.should.equal(correct.keysql);
       },
     },
-    'Gogo.Schema.Document': {
+    'Gogo.Field.Document': {
       'basic test' : function (s) {
         function intta (v) { return v; }
         function outta (v) { return v; }
@@ -293,7 +293,7 @@ vows.describe('schema helpers').addBatch({
         ss.validators[0].should.equal(Gogo.Validators.Require);
       },
     },
-    'Gogo.Schema.Boolean': {
+    'Gogo.Field.Boolean': {
       'basic' : function (s) {
         var ss = s.Boolean()();
         ss.sql.should.match(/^boolean$/i)
@@ -303,7 +303,7 @@ vows.describe('schema helpers').addBatch({
         ss.sql.should.match(/default 1/i)
       }
     },
-    'Gogo.Schema.Timestamp': {
+    'Gogo.Field.Timestamp': {
       'basic' : function (s) {
         var ss = s.Time()();
         ss.sql.should.match(/^timestamp$/i)
@@ -345,7 +345,7 @@ vows.describe('schema helpers').addBatch({
       topic: function () {
         var M = Base.extend({
           table: 'tesstsajo',
-          schema: { id: Gogo.Schema.Id, name: Gogo.Schema.String('long') }
+          schema: { id: Gogo.Field.Id, name: Gogo.Field.String('long') }
         });
         return M;
       },
@@ -363,12 +363,12 @@ vows.describe('schema helpers').addBatch({
       topic: function () {
         var User = Base.extend({
           schema: {
-            id: Gogo.Schema.Id,
-            email: Gogo.Schema.String({ length: 255, unique: true, required: true }),
-            last_login: Gogo.Schema.Number({ null: true }),
-            active: Gogo.Schema.Boolean({ default: 1 }),
-            passwd: Gogo.Schema.String({ length: 255 }),
-            salt: Gogo.Schema.String({ type: 'blob', length: 'tiny' })
+            id: Gogo.Field.Id,
+            email: Gogo.Field.String({ length: 255, unique: true, required: true }),
+            last_login: Gogo.Field.Number({ null: true }),
+            active: Gogo.Field.Boolean({ default: 1 }),
+            passwd: Gogo.Field.String({ length: 255 }),
+            salt: Gogo.Field.String({ type: 'blob', length: 'tiny' })
           }
         });
         return User;
@@ -388,18 +388,18 @@ vows.describe('schema helpers').addBatch({
         var User = Base.extend({
           table: 'jlakj9',
           schema: {
-            id: Gogo.Schema.Id,
-            email: Gogo.Schema.String({ length: 255, unique: true, required: true })
+            id: Gogo.Field.Id,
+            email: Gogo.Field.String({ length: 255, unique: true, required: true })
           }
         });
         var Badge = Base.extend({
           schema: {
-            id: Gogo.Schema.Id,
-            user_id: Gogo.Schema.Foreign({
+            id: Gogo.Field.Id,
+            user_id: Gogo.Field.Foreign({
               model: User,
               field : 'id'
             }),
-            type: Gogo.Schema.Enum(['hosted', 'signed'], { null: false })
+            type: Gogo.Field.Enum(['hosted', 'signed'], { null: false })
           }
         })
         return Badge;

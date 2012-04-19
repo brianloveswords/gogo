@@ -14,17 +14,17 @@ common.prepareTesting(client);
 var Models = {
   Volatile: Base.extend({
     table: 'volatile',
-    schema: { id: Base.Schema.Id, drop: Base.Schema.Number, rename: Base.Schema.Number }
+    schema: { id: Base.Field.Id, drop: Base.Field.Number, rename: Base.Field.Number }
   }),
   
   User: Base.extend({
     table: 'user',
-    schema: { id: Base.Schema.Id }
+    schema: { id: Base.Field.Id }
   }),
   
   Stuff: Base.extend({
     table: 'stuff',
-    schema: { id: Base.Schema.Id }
+    schema: { id: Base.Field.Id }
   }),
 };
 
@@ -45,12 +45,12 @@ suite.addBatch({
     'getAlterSql': {
       topic: function (M) { return M.User.Migration() },
       'add' : function (t) {
-        var sql = t.getAlterSql({ yam: Base.Schema.String() }, 'add');
+        var sql = t.getAlterSql({ yam: Base.Field.String() }, 'add');
         sql[0].should.equal('ALTER TABLE `user` ADD `yam` TEXT');
       },
       'change': {
         'takes a spec' :function (t) {
-          var sql = t.getAlterSql({ beets: Base.Schema.Number() }, 'change');
+          var sql = t.getAlterSql({ beets: Base.Field.Number() }, 'change');
           sql[0].should.equal('ALTER TABLE `user` CHANGE `beets` INT');
         },
         'takes a straaaaang': function (t) {
@@ -58,7 +58,7 @@ suite.addBatch({
           sql[0].should.equal('ALTER TABLE `user` CHANGE `clams` TASTY CLAMS');
         },
         'handles unique intelligently': function (t) {
-          var sql = t.getAlterSql({ clams: Base.Schema.Text({unique: 128}) }, 'change');
+          var sql = t.getAlterSql({ clams: Base.Field.Text({unique: 128}) }, 'change');
           sql.should.have.lengthOf(2);
           sql[1].should.equal('ALTER TABLE `user` ADD UNIQUE KEY `clams` (`clams` (128))');
         }
@@ -92,7 +92,7 @@ suite.addBatch({
             Base.client.query('show create table user', this.callback)
           }.bind(this);
 
-          var spec = { emperor: Base.Schema.String({
+          var spec = { emperor: Base.Field.String({
             type: 'varchar',length: 255,unique: 128,default: 'x'
           })}
 
@@ -125,10 +125,10 @@ suite.addBatch({
           }.bind(this);
 
           var specs =[
-            { sss: Base.Schema.String({type: 'char', length: 128, unique: true, default: 'y'})},
-            { nnn: Base.Schema.Number() },
-            { eee: Base.Schema.Enum(['one', 'two']) },
-            { stuff_id: Base.Schema.Foreign({model: M.Stuff, field: 'id'})}
+            { sss: Base.Field.String({type: 'char', length: 128, unique: true, default: 'y'})},
+            { nnn: Base.Field.Number() },
+            { eee: Base.Field.Enum(['one', 'two']) },
+            { stuff_id: Base.Field.Foreign({model: M.Stuff, field: 'id'})}
           ]
           try {
             fmap.async(adder, specs, cb_addCol);
@@ -218,7 +218,7 @@ suite.addBatch({
   
 var Multi = Base.extend({
   table: 'multimigrate',
-  schema: { id: Base.Schema.Id }
+  schema: { id: Base.Field.Id }
 });
 
 suite.addBatch({
@@ -231,8 +231,8 @@ suite.addBatch({
         return M.Migration({
           '0001: add a `name` field' : {
             up: function (t) {
-              t.addColumn({ name: Base.Schema.String });
-              t.addColumn({ radness: Base.Schema.Number });
+              t.addColumn({ name: Base.Field.String });
+              t.addColumn({ radness: Base.Field.Number });
             },
             down: function (t) {
               t.dropColumn('name');
@@ -301,7 +301,7 @@ suite.addBatch({
     topic: function () {
       var BadUp = Base.extend({
         table: 'badup',
-        schema: { id: Base.Schema.Id }
+        schema: { id: Base.Field.Id }
       });
       BadUp.makeTable(this.callback);
     },
@@ -310,8 +310,8 @@ suite.addBatch({
         return M.Migration({
           '0001 : add a `name` field' : {
             up: function (t) {
-              t.addColumn({ name: Base.Schema.String });
-              t.addColumn({ name: Base.Schema.Number });
+              t.addColumn({ name: Base.Field.String });
+              t.addColumn({ name: Base.Field.Number });
             },
             down: function (t) { t.dropColumn('name'); }
           }
@@ -335,7 +335,7 @@ suite.addBatch({
     topic: function () {
       var Missing = Base.extend({
         table: 'missingmigration',
-        schema: { id: Base.Schema.Id }
+        schema: { id: Base.Field.Id }
       });
       Missing.makeTable(this.callback);
     },
@@ -343,7 +343,7 @@ suite.addBatch({
       topic : function (M) {
         return M.Migration({
           '0001 : add a `name` field' : {
-            up: function (t) { t.addColumn({ name: Base.Schema.String });},
+            up: function (t) { t.addColumn({ name: Base.Field.String });},
             down: function (t) { t.dropColumn('name'); }
           }
         });
