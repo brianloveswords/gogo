@@ -11,7 +11,7 @@
 ![deal with it](http://i.imgur.com/JFuNF.gif)
 
 
-## Use a seperate `var` statement per assignment.
+## Use a separate `var` statement per assignment.
 
 ![batman approves](http://i.imgur.com/X2PkH.gif)
 
