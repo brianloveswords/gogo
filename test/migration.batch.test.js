@@ -33,8 +33,8 @@ suite.addBatch({
           down: function (t) { t.dropColumn('email') }
         },
         '103: rename email to electronicmail': {
-          up: function (t) { t.renameColumn({ email: 'electronicmail' }) },
-          down: function (t) { t.renameColumn({ electronicmail: 'email' }) }
+          up: function (t) { t.renameColumn('email', 'electronicmail') },
+          down: function (t) { t.renameColumn('electronicmail', 'email') }
         }
       });
       m.makeTable(this.callback);
@@ -54,7 +54,20 @@ suite.addBatch({
         'should be 103' : function (version) {
           version.should.equal('103: rename email to electronicmail');
         },
-      }
+      },
+      'and the table' : {
+        topic : function () {
+          client.query('show create table `batch_migration_test`', this.callback)
+        },
+        'should contain the correct fields' : function (err, result) {
+          assert.ifError(err);
+          assert.ok(!(result instanceof Error));
+          var createTableString = result[0]['Create Table'];
+          createTableString.should.match(/`electronicmail`/);
+          createTableString.should.match(/`name`/);
+          createTableString.should.match(/`id`/);
+        },
+      },
     }
   }
 })
