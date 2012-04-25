@@ -14,14 +14,14 @@ vows.describe('schema helpers').addBatch({
       spec.sql.should.equal('BIGINT AUTO_INCREMENT');
       spec.keysql.should.equal('PRIMARY KEY (`id`)');
       assert.include(spec, 'validators');
-      assert.include(spec.validators, Gogo.Validators.Type.Number);
+      assert.include(spec.validators, Gogo.Validator.Type.Number);
     },
     'Gogo.Field.Number' : {
       'standard fare': function (s) {
         var spec = s.Number()();
             spec.sql.should.equal('INT');
         assert.include(spec, 'validators');
-        assert.include(spec.validators, Gogo.Validators.Type.Number);
+        assert.include(spec.validators, Gogo.Validator.Type.Number);
       },
       'big ones': function (s) {
         var spec = s.Number('big')();
@@ -61,11 +61,11 @@ vows.describe('schema helpers').addBatch({
         var spec = s.Number('small', { null: false })();
         spec.sql.should.equal('SMALLINT NOT NULL');
             // #TODO: file bug with should.js about should.include not supporting objects
-        spec.validators.should.include(Gogo.Validators.Require);
+        spec.validators.should.include(Gogo.Validator.Require);
         
         spec = s.Number('small', { required: true })();
         spec.sql.should.equal('SMALLINT NOT NULL');
-        spec.validators.should.include(Gogo.Validators.Require);
+        spec.validators.should.include(Gogo.Validator.Require);
       },
       'default': function (s) {
         var spec = s.Number({ default: 10 })();
@@ -77,7 +77,7 @@ vows.describe('schema helpers').addBatch({
         var spec = s.Float()('abv');
         spec.sql.should.equal('FLOAT');
         assert.include(spec, 'validators');
-        assert.include(spec.validators, Gogo.Validators.Type.Number);
+        assert.include(spec.validators, Gogo.Validator.Type.Number);
       },
     },
     'Gogo.Field.Double' : {
@@ -85,7 +85,7 @@ vows.describe('schema helpers').addBatch({
         var spec = s.Double()('abv');
         spec.sql.should.equal('DOUBLE');
         assert.include(spec, 'validators');
-        assert.include(spec.validators, Gogo.Validators.Type.Number);
+        assert.include(spec.validators, Gogo.Validator.Type.Number);
       },
     },
     'Gogo.Field.Blob' : {
@@ -93,7 +93,7 @@ vows.describe('schema helpers').addBatch({
         var spec = s.Blob({default: 'ya'})('the blob');
         spec.sql.should.equal('BLOB DEFAULT "ya"');
         assert.include(spec, 'validators');
-        assert.include(spec.validators, Gogo.Validators.Type.String);
+        assert.include(spec.validators, Gogo.Validator.Type.String);
       },
     },
     'Gogo.Field.Varchar' : {
@@ -101,20 +101,20 @@ vows.describe('schema helpers').addBatch({
         var spec = s.Varchar(128)('word');
         spec.sql.should.equal('VARCHAR(128)');
         assert.include(spec, 'validators');
-        assert.include(spec.validators, Gogo.Validators.Type.String);
+        assert.include(spec.validators, Gogo.Validator.Type.String);
       },
       'with options': function (s) {
         var spec = s.Varchar({length: 128, default: 'yep'})('word');
         spec.sql.should.equal('VARCHAR(128) DEFAULT "yep"');
         assert.include(spec, 'validators');
-        assert.include(spec.validators, Gogo.Validators.Type.String);
+        assert.include(spec.validators, Gogo.Validator.Type.String);
       },
       'with unique': function (s) {
         var spec = s.Varchar({length: 128, unique: 128})('word');
         spec.sql.should.equal('VARCHAR(128)');
         spec.keysql.should.equal('UNIQUE KEY `word` (`word` (128))');
         assert.include(spec, 'validators');
-        assert.include(spec.validators, Gogo.Validators.Type.String);
+        assert.include(spec.validators, Gogo.Validator.Type.String);
       },
     },
     'Gogo.Field.Char' : {
@@ -122,13 +122,13 @@ vows.describe('schema helpers').addBatch({
         var spec = s.Char(128)('word');
         spec.sql.should.equal('CHAR(128)');
         assert.include(spec, 'validators');
-        assert.include(spec.validators, Gogo.Validators.Type.String);
+        assert.include(spec.validators, Gogo.Validator.Type.String);
       },
       'with options': function (s) {
         var spec = s.Char({length: 128, default: 'yep'})('word');
         spec.sql.should.equal('CHAR(128) DEFAULT "yep"');
         assert.include(spec, 'validators');
-        assert.include(spec.validators, Gogo.Validators.Type.String);
+        assert.include(spec.validators, Gogo.Validator.Type.String);
       },
     },
     'Gogo.Field.Binary' : {
@@ -136,13 +136,13 @@ vows.describe('schema helpers').addBatch({
         var spec = s.Binary(128)('word');
         spec.sql.should.equal('BINARY(128)');
         assert.include(spec, 'validators');
-        spec.validators[0].should.not.equal(Gogo.Validators.Type.String);
+        spec.validators[0].should.not.equal(Gogo.Validator.Type.String);
       },
       'with options': function (s) {
         var spec = s.Binary({length: 128, default: 'yep'})('word');
         spec.sql.should.equal('BINARY(128) DEFAULT "yep"');
         assert.include(spec, 'validators');
-        spec.validators[0].should.not.equal(Gogo.Validators.Type.String);
+        spec.validators[0].should.not.equal(Gogo.Validator.Type.String);
       },
     },
     'Gogo.Field.Char' : {
@@ -150,13 +150,13 @@ vows.describe('schema helpers').addBatch({
         var spec = s.Varbinary(128)('word');
         spec.sql.should.equal('VARBINARY(128)');
         assert.include(spec, 'validators');
-        spec.validators[0].should.not.equal(Gogo.Validators.Type.String);
+        spec.validators[0].should.not.equal(Gogo.Validator.Type.String);
       },
       'with options': function (s) {
         var spec = s.Varbinary({length: 128, default: 'yep'})('word');
         spec.sql.should.equal('VARBINARY(128) DEFAULT "yep"');
         assert.include(spec, 'validators');
-        spec.validators[0].should.not.equal(Gogo.Validators.Type.String);
+        spec.validators[0].should.not.equal(Gogo.Validator.Type.String);
       },
     },
     'Gogo.Field.String' : {
@@ -164,7 +164,7 @@ vows.describe('schema helpers').addBatch({
         var spec = s.String()();
         spec.sql.should.equal('TEXT');
         assert.include(spec, 'validators');
-        assert.include(spec.validators, Gogo.Validators.Type.String);
+        assert.include(spec.validators, Gogo.Validator.Type.String);
       },
       'char': function (s) {
         var spec = s.String({size: 28, type: 'char'})();
@@ -215,7 +215,7 @@ vows.describe('schema helpers').addBatch({
         
         spec = s.String({ required: true })();
         spec.sql.should.equal('TEXT NOT NULL');
-        spec.validators.should.include(Gogo.Validators.Require);
+        spec.validators.should.include(Gogo.Validator.Require);
       }
     },
     'Gogo.Field.Enum' : {
@@ -231,7 +231,7 @@ vows.describe('schema helpers').addBatch({
       'null/not null': function (s) {
         var spec = s.Enum(['yo', 'la', 'tengo'], { required: true })();
         assert.include(spec, 'validators');
-        spec.validators[0].should.equal(Gogo.Validators.Require);
+        spec.validators[0].should.equal(Gogo.Validator.Require);
       },
       'default': function (s) {
         var spec = s.Enum(['yo', 'la', 'tengo'], { default: 'tengo' })();
@@ -270,7 +270,7 @@ vows.describe('schema helpers').addBatch({
         })();
         var correct = {
           sql: "BLOB",
-          validators: [Gogo.Validators.Serializable(intta)],
+          validators: [Gogo.Validator.Serializable(intta)],
           mutators: { storage: intta, retrieval: outta }
         };
         ss.sql.should.equal(correct.sql);
@@ -290,7 +290,7 @@ vows.describe('schema helpers').addBatch({
       'null/not null' : function (s) {
         var ss = s.Document({required: true})();
         ss.sql.should.match(/not null/i);
-        ss.validators[0].should.equal(Gogo.Validators.Require);
+        ss.validators[0].should.equal(Gogo.Validator.Require);
       },
     },
     'Gogo.Field.Boolean': {

@@ -4,21 +4,21 @@ var assert = require('assert');
 var should = require('should');
 var Gogo = require('..');
 
-vows.describe('Validators whaaaaat').addBatch({
+vows.describe('Validator whaaaaat').addBatch({
   'validator helpers': {
-    topic: Gogo.Validators,
-    'Gogo.Validators.Require': function (v) {
+    topic: Gogo.Validator,
+    'Gogo.Validator.Require': function (v) {
       v.Require(null).name.should.equal('required');
       should.not.exist(v.Require('rad'));
       assert.isFunction(v.Require()()())
     },
-    'Gogo.Validators.Require.when': function (v) {
+    'Gogo.Validator.Require.when': function (v) {
       var test = v.Require.when({field:'type', is:'signed'})
       var o = {type: 'signed'}
       test(null, o).name.should.equal('required-when');
       should.not.exist(test(true, o));
     },
-    'Gogo.Validators.Length (positional)' : {
+    'Gogo.Validator.Length (positional)' : {
       topic: function (v) { return v.Length(4) },
       'invalid things should return an object' : function (test) {
         function $ (e) { e.name.should.equal('length') }
@@ -30,7 +30,7 @@ vows.describe('Validators whaaaaat').addBatch({
         $(test(undefined));
       }
     },
-    'Gogo.Validators.Length (named)' : {
+    'Gogo.Validator.Length (named)' : {
       topic: function (v) { return v.Length({min: 2, max: 4}) },
       'invalid things should return an object' : function (test) {
         function $ (e) { e.name.should.equal('length') }
@@ -44,7 +44,7 @@ vows.describe('Validators whaaaaat').addBatch({
         $(test(undefined));
       }
     },
-    'Gogo.Validators.Serializable' : {
+    'Gogo.Validator.Serializable' : {
       topic: function (v) { return v.Serializable(JSON.stringify) },
       'invalid things should return an object' : function (test) {
         function $ (e) { e.name.should.equal('serializable') }
@@ -56,7 +56,7 @@ vows.describe('Validators whaaaaat').addBatch({
         $(test(undefined));
       }
     },
-    'Gogo.Validators.Type.Enum' : {
+    'Gogo.Validator.Type.Enum' : {
       topic: function (v) { return v.Type.Enum(['lame', 'sauce']) },
       'invalid things should return an object' : function (test) {
         function $ (e) { e.name.should.equal('type.enum') }
@@ -69,7 +69,7 @@ vows.describe('Validators whaaaaat').addBatch({
         $(test(undefined));
       }
     },
-    'Gogo.Validators.Type.Number' : {
+    'Gogo.Validator.Type.Number' : {
       topic: function (v) { return v.Type.Number },
       'invalid things should return an object' : function (test) {
         function $ (e) { e.name.should.equal('type.number') }
@@ -91,7 +91,7 @@ vows.describe('Validators whaaaaat').addBatch({
         test.should.equal(test()()());
       }
     },
-    'Gogo.Validators.Type.String' :{
+    'Gogo.Validator.Type.String' :{
       topic: function (v) { return v.Type.String },
       'invalid things should return object' : function (test) {
         function $ (thing) { thing.name.should.equal('type.string') }
@@ -107,7 +107,7 @@ vows.describe('Validators whaaaaat').addBatch({
         test.should.equal(test()()());
       }
     },
-    'Gogo.Validators.Type.Object' : {
+    'Gogo.Validator.Type.Object' : {
       topic: function (v) { return v.Type.Object },
       'invalid things should return object' : function (test) {
         function $ (thing) { thing.name.should.equal('type.object') }
@@ -124,7 +124,7 @@ vows.describe('Validators whaaaaat').addBatch({
         test.should.equal(test()()());
       }
     },
-    'Gogo.Validators.Regexp' : {
+    'Gogo.Validator.Regexp' : {
       topic: function (v) { return v.Regexp(/blargh/) },
       'invalid things should return object' : function (test) {
         function $ (thing) { thing.name.should.equal('regexp') }
@@ -139,11 +139,11 @@ vows.describe('Validators whaaaaat').addBatch({
       },
       'invalid regexp should throw' : function () {
         assert.throws(function () {
-          Gogo.Validators.Regexp({})
+          Gogo.Validator.Regexp({})
         }, /invalid/);
       },
     },
-    'Gogo.Validators.Email' : {
+    'Gogo.Validator.Email' : {
       topic: function (v) { return v.Email },
       'invalid things should return object' : function (test) {
         function $ (thing) { thing.name.should.equal('email') }
@@ -159,7 +159,7 @@ vows.describe('Validators whaaaaat').addBatch({
         test.should.equal(test()()());
       }
     },
-    'Gogo.Validators.Require.all': {
+    'Gogo.Validator.Require.all': {
       'precedes all validators with Require': function (v) {
         var validators = {
           one: [],
@@ -175,7 +175,7 @@ vows.describe('Validators whaaaaat').addBatch({
         validators.three.meta.name.should.equal('doc');
       },
     },
-    'Gogo.Validators.Doc' : {
+    'Gogo.Validator.Doc' : {
       'if an entry is required, parent is required' : function (v) {
         var test = v.Doc({
           thing: v.Require
