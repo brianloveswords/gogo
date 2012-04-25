@@ -124,6 +124,23 @@ vows.describe('Validator whaaaaat').addBatch({
         test.should.equal(test()()());
       }
     },
+    'Gogo.Validator.Type.Array' : {
+      topic: function (v) { return v.Type.Array },
+      'invalid things should return object' : function (test) {
+        function $ (thing) { thing.name.should.equal('type.array') }
+        $(test({ oooo: 'lala' }));
+        $(test('just some string'));
+        $(test(function(){}));
+      },
+      'valid things should return nothing' : function (test) {
+        function $ (e) { should.not.exist(e) }
+        $(test(['i', 'am', 'an', 'array']));
+        $(test(undefined));
+      },
+      'should return itself until given a value' : function (test) {
+        test.should.equal(test()()());
+      }
+    },
     'Gogo.Validator.Regexp' : {
       topic: function (v) { return v.Regexp(/blargh/) },
       'invalid things should return object' : function (test) {
