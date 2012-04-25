@@ -181,7 +181,7 @@ vows.describe('Validator whaaaaat').addBatch({
         var validators = {
           one: [],
           two: v.Email,
-          three: v.Doc({
+          three: v.Document({
             four: v.Email
           })
         }
@@ -192,9 +192,9 @@ vows.describe('Validator whaaaaat').addBatch({
         validators.three.meta.name.should.equal('doc');
       },
     },
-    'Gogo.Validator.Doc' : {
+    'Gogo.Validator.Document' : {
       'if an entry is required, parent is required' : function (v) {
-        var test = v.Doc({
+        var test = v.Document({
           thing: v.Require
         })
         test({}).name.should.equal('doc');
@@ -202,7 +202,7 @@ vows.describe('Validator whaaaaat').addBatch({
         should.not.exist(test({thing: false}));
       },
       'can handle array of validators' : function (v) {
-        var test = v.Doc({
+        var test = v.Document({
           thing: [v.Require, v.Email]
         })
         test({}).name.should.equal('doc');
@@ -210,9 +210,9 @@ vows.describe('Validator whaaaaat').addBatch({
         should.not.exist(test({thing: 'wut@lol.com'}));
       },
       'can be nested' : function (v) {
-        var test = v.Doc({
-          thing: v.Doc({
-            otherThing: v.Doc({
+        var test = v.Document({
+          thing: v.Document({
+            otherThing: v.Document({
               oneMoreThing: [v.Require, v.Email]
             })
           })
@@ -227,9 +227,9 @@ vows.describe('Validator whaaaaat').addBatch({
         should.not.exist(t);
       },
       'errors on subs get the right field name' : function (v) {
-        var test = v.Doc({
-          thing: v.Doc({
-            otherThing: v.Doc({
+        var test = v.Document({
+          thing: v.Document({
+            otherThing: v.Document({
               oneMoreThing: v.Require()
             })
           })
@@ -242,18 +242,18 @@ vows.describe('Validator whaaaaat').addBatch({
       },
       'can get real complicated' : {
         topic: function (v) {
-          var test = v.Doc({
+          var test = v.Document({
             recipient: [v.Require, v.Email],
             evidence: v.Regexp(/w/),
             expires: v.Regexp(/w/),
             issued_on: v.Regexp(/w/),
-            badge: v.Doc(v.Require.all({
+            badge: v.Document(v.Require.all({
               version: v.Regexp(/w/),
               name: v.Length(128),
               description: v.Length(128),
               image: v.Regexp(/w/),
               criteria: v.Regexp(/w/),
-              issuer: v.Doc({
+              issuer: v.Document({
                 origin: [v.Require, v.Regexp(/w/)],
                 name: [v.Require, v.Length(128)],
                 org: v.Length(128),

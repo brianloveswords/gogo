@@ -60,9 +60,9 @@ var Stories = Base.extend({
   }
 
   validators: {
-    metadata: Base.Validator.Doc({
+    metadata: Base.Validator.Document({
       tags: Base.Validator.Type.Array,
-      social: Base.Validator.Doc({
+      social: Base.Validator.Document({
         tweets: Base.Validator.Type.Number,
         likes: Base.Validator.Type.Number,
         plusones: Base.Validator.Type.Number,
