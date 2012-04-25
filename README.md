@@ -45,7 +45,7 @@ var User = Base.extend({
 
 // more complex
 var Stories = Base.extend({
-  table: story',
+  table: 'story',
   engine: 'InnoDB',
   schema: {
     id: Base.Field.Id,
