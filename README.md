@@ -1,6 +1,6 @@
 # Gogo - a migration & nested document capable database abstraction for insane people
 
-## This is 0.0.1 software -- it probably isn't ready for public consumption yet.
+### This is 0.0.1 software -- it probably isn't ready for public consumption yet.
 
 ## Example
 
@@ -61,17 +61,42 @@ var Stories = Base.extend({
 
   validators: {
     metadata: Base.Validator.Document({
-      tags: Base.Validator.Type.Array,
+      tags: [ Base.Validator.Type.Array, Base.Validator.Require ],
       social: Base.Validator.Document({
         tweets: Base.Validator.Type.Number,
         likes: Base.Validator.Type.Number,
-        plusones: Base.Validator.Type.Number,
+        plusones: Base.Validator.Type.Number
       })
     })
   }
 };
 
 // instantiating models.
+var newUser = new User({
+  email: "brian@example.com",
+  admin: true
+});
+newUser.setPassword('very secure password');
+newUser.save();
+
+
+// finding records
+User.findOne({ email: "brian@example.com" }, function(err, user){
+  // do stuff with user
+});
+
+
+// setting up migrations
+User.Migration({
+  '001: rename email to electronic mail': {
+     up: function(t) { t.renameColumn('email', 'electronicmail') },
+     down: function(t) { t.renameColumn('electronicmail', 'email') } 
+  }
+  '002: add column `active`': {
+    up: function(t) { t.addColumn({ active: Base.Field.Boolean({ default: true }) }) }
+    down: function(t) { t.dropColumn('active') }
+  }
+}).runBatch();
 ```
  
 
