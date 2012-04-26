@@ -98,7 +98,20 @@ User.Migration({
   }
 }).runBatch();
 ```
- 
+
+## Available Fields
+
+### Depends on: Validators
+
+#### Gogo.Field.Id
+Takes no options.
+
+An auto incrementing primary key. Adds a `Type.Number` validator.
+
+#### Gogo.Field.Number(*length*, *options*)
+#### Gogo.Field.Number(*type*, *options*)
+#### Gogo.Field.Number(*options*)
+`type` defaults to `int`.
 
 
 [![Build Status](https://secure.travis-ci.org/brianloveswords/gogo.png)](http://travis-ci.org/brianloveswords/gogo)
