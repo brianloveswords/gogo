@@ -1,3 +1,5 @@
+var driver = exports.driver = process.env['DB_DRIVER'] || 'mysql';
+
 var conf = exports.conf = {
   mysql: {
     driver: 'mysql',
@@ -9,7 +11,7 @@ var conf = exports.conf = {
     driver: 'sqlite',
     database: 'test.db'
   }
-}[process.env['DB_DRIVER'] || 'mysql'];
+}[driver];
 
 exports.prepareTesting = function (client, callback) {
   callback = callback || function () {};
