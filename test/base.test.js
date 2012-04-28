@@ -103,7 +103,7 @@ vows.describe('base basics').addBatch({
       var self = this;
       var Truncator = Base.extend({
         table: 'truncateMe',
-        schema: { id: Gogo.Field.Id }
+        schema: { id: Gogo.Field.Id, blah: Gogo.Field.Text }
       }).makeTable(function (err, Model) {
         var x = new Model();
         x.save(function (err, instance) {
