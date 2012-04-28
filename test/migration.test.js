@@ -1,9 +1,10 @@
+var common = require('./common.js');
+
 var _ = require('underscore');
 var vows = require('vows');
 var assert = require('assert');
 var should = require('should');
 var fmap = require('functools').map;
-var common = require('./common.js');
 var Gogo = require('..')(common.conf);
 var client = Gogo.client;
 
@@ -356,4 +357,4 @@ suite.addBatch({
   }
 });
 
-suite.export(module);
+if (common.driver === 'mysql') suite.export(module);
