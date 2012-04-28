@@ -1,3 +1,5 @@
 node_modules
 /extras/.vagrant
 /npm-debug.log
+/sqlite-test.js
+/test.db
