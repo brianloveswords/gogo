@@ -1,11 +1,21 @@
 var conf = exports.conf = {
-  driver: 'mysql',
-  host: '127.0.0.1',
-  user: 'root',
-  database: 'myapp_test'
-};
+  mysql: {
+    driver: 'mysql',
+    host: '127.0.0.1',
+    user: 'root',
+    database: 'myapp_test'
+  },
+  sqlite: {
+    driver: 'sqlite',
+    database: 'test.db'
+  }
+}[process.env['DB_DRIVER'] || 'mysql'];
+
 exports.prepareTesting = function (client, callback) {
-  client.query("DROP DATABASE IF EXISTS " + conf.database);
-  client.query("CREATE DATABASE IF NOT EXISTS " + conf.database);
-  client.query("USE "+ conf.database, callback);
+  callback = callback || function () {};
+  if (conf.driver === 'mysql') {
+    client.query("DROP DATABASE IF EXISTS " + conf.database);
+    client.query("CREATE DATABASE IF NOT EXISTS " + conf.database);
+    client.query("USE "+ conf.database, callback);
+  }
 };
