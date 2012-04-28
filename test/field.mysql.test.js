@@ -1,11 +1,9 @@
-var _ = require('underscore');
-var vows = require('vows');
-var assert = require('assert');
-var should = require('should');
-var Gogo = require('..');
+var common = require('./common.js');
+var vows = require('vows'), assert = require('assert'), should = require('should');
+var Gogo = require('..')(common.conf);
 var Base = Gogo.Base;
 
-vows.describe('schema helpers').addBatch({
+var suite = vows.describe('schema helpers').addBatch({
   'field helpers': {
     topic: Gogo.Field,
     'Gogo.Field.Id' : function (f) {
@@ -19,7 +17,7 @@ vows.describe('schema helpers').addBatch({
     'Gogo.Field.Number' : {
       'standard fare': function (s) {
         var spec = s.Number()();
-            spec.sql.should.equal('INT');
+        spec.sql.should.equal('INT');
         assert.include(spec, 'validators');
         assert.include(spec.validators, Gogo.Validator.Type.Number);
       },
@@ -60,7 +58,7 @@ vows.describe('schema helpers').addBatch({
       'null/not null': function (s) {
         var spec = s.Number('small', { null: false })();
         spec.sql.should.equal('SMALLINT NOT NULL');
-            // #TODO: file bug with should.js about should.include not supporting objects
+        // #TODO: file bug with should.js about should.include not supporting objects
         spec.validators.should.include(Gogo.Validator.Require);
         
         spec = s.Number('small', { required: true })();
@@ -416,4 +414,6 @@ vows.describe('schema helpers').addBatch({
       }
     }
   }
-}).export(module);
+})
+
+if (common.driver === 'mysql') suite.export(module);
