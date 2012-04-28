@@ -1,6 +1,6 @@
 var common = require('./common.js');
 var vows = require('vows'), assert = require('assert'), should = require('should');
-var Gogo = require('..');
+var Gogo = require('..')(common.conf);
 var Base = Gogo.Base;
 
 var suite = vows.describe('schema helpers').addBatch({
