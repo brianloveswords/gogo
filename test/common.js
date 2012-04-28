@@ -9,7 +9,7 @@ var conf = exports.conf = {
   },
   sqlite: {
     driver: 'sqlite',
-    database: 'test.db'
+    database: process.env['DB_FILE'] || 'test.db'
   }
 }[driver];
 
