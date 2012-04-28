@@ -98,6 +98,28 @@ vows.describe('base basics').addBatch({
     },
   }
 }).addBatch({
+  "Model#truncateTable": {
+    topic : function () {
+      var self = this;
+      var Truncator = Base.extend({
+        table: 'truncateMe',
+        schema: { id: Gogo.Field.Id }
+      }).makeTable(function (err, Model) {
+        var x = new Model();
+        x.save(function (err, instance) {
+          Model.truncateTable(function (err, Model) {
+            Model.find({}, self.callback);
+          });
+        })
+      })
+    },
+    'will truncate the table' : function (err, results) {
+      assert.ifError(err);
+      assert.ok(!(results instanceof Error));
+      results.length.should.equal(0);
+    },
+  }
+}).addBatch({
   'Base model instances, saving': {
     'a basic model' : {
       topic: function () {
